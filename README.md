@@ -19,7 +19,7 @@ mkdir -p ./output
 build project
 
 ```shell
-g++ main.cpp -o ./output/main -lsfml-graphics -lsfml-window -lsfml-system
+g++ main.cpp ./src/*.cpp -o ./output/main -lsfml-graphics -lsfml-window -lsfml-system
 ```
 
 run project
