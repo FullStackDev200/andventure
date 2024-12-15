@@ -280,6 +280,21 @@ vector<vector<char>> BuildRandomRooms(int amount)
 
   return map;
 }
+//d/fasd/fsdfasf
+//d/fasd/fsdfasf
+//d/fasd/fsdfasf
+//d/fasd/fsdfasf
+//d/fasd/fsdfasf
+//d/fasd/fsdfasf
+//d/fasd/fsdfasf
+//d/fasd/fsdfasf
+//d/fasd/fsdfasf
+//d/fasd/fsdfasf
+//d/fasd/fsdfasf
+//d/fasd/fsdfasf
+//d/fasd/fsdfasf
+//d/fasd/fsdfasf
+//d/fasd/fsdfasf
 
 vector<vector<char>> buildMap()
 {
