@@ -16,6 +16,9 @@ int main()
 
   build_graph();
 
+  vector<pair<int, int>> rooms = get_rooms();
+  vector<pair<int, int>> coords = get_coordinates();
+
   int window_length = (get_graph().size() - 1) * 10;
   int window_height = (get_graph()[0].size()) * 10;
 
@@ -23,26 +26,21 @@ int main()
   sf::RenderWindow window(sf::VideoMode(window_height, window_length), "SFML Window");
   cout << "Window created\n";
 
-  vector<pair<int, int>> cords = get_coordinates();
-
   print_coordinates_and_rooms;
 
-  // Get rooms (this function should return a vector of pairs of integers)
-  vector<pair<int, int>> rooms = get_rooms();
-  vector<pair<int, int>> coords = get_coordinates();
-
   // Create a vector of sf::Vector2i from the rooms
-  vector<sf::Vector2i> sfmlRooms;
+  vector<sf::Vector2i> sfml_rooms;
 
   // Convert each pair<int, int> to sf::Vector2i
-  for (const auto &room : rooms)
+  for (auto &room : rooms)
   {
-    sfmlRooms.push_back(sf::Vector2i(room.first, room.second));
+    sfml_rooms.push_back(sf::Vector2i(room.first, room.second));
   }
 
   // Create a rectangle and set its size based on the first room
-  if (!sfmlRooms.empty())
-  { // Check if there are rooms in the list
+  if (!sfml_rooms.empty())
+  { 
+    // Check if there are rooms in the list
     sf::RectangleShape rectangle;
     // Setting the rectangle's size based on the first room coordinates
     rectangle.setSize(
