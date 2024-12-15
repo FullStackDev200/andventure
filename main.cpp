@@ -1,43 +1,96 @@
-#include <bits/stdc++.h>
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/System.hpp>
+#include "./src/adventure_graph.hpp"
 
-#include "./src/adventure_graph.hpp";
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#include <iostream>
+#include <utility>
+#include <vector>
 
 using namespace std;
-using namespace adventure_graph;
 
-int main()
-{
-  sf::RectangleShape rectangle;
-  rectangle.setSize(sf::Vector2f(100, 50));
-  
-  build_graph();
+int main() {
+  cout << "Program started\n";
 
-  vector<vector<char>> graph = get_graph();
+  adventure_graph::build_graph();
 
-  sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Window");
-  window.setVerticalSyncEnabled(false);
+  int window_length = adventure_graph::get_graph().size() - 1;
+  int window_height = adventure_graph::get_graph()[0].size();
 
-  while (window.isOpen()) {
-    sf::Event event;
-    while (window.pollEvent(event)) {
-      if (event.type == sf::Event::Closed)
-        window.close();
-    } 
+  // Create SFML window
+  sf::RenderWindow window(sf::VideoMode(window_height, window_length),
+                          "SFML Window");
+  cout << "Window created\n";
 
-    window.clear();
-    
-    sf::RectangleShape room;
-    room.setSize(sf::Vector2f(100, 50));
-    room.setOutlineColor(sf::Color::Red);
-    room.setOutlineThickness(5);
-    room.setPosition(10, 20);
-    window.draw(room);
+  vector<pair<int, int>> skibidi = adventure_graph::get_coordinates();
 
-    window.display();
+  for (const auto &p : skibidi) {
+    cout << "(" << p.first << ", " << p.second << ")" << endl;
+  };
+  // Get rooms (this function should return a vector of pairs of integers)
+  vector<pair<int, int>> rooms = adventure_graph::get_rooms();
+  vector<pair<int, int>> coords = adventure_graph::get_coordinates();
+
+  // Create a vector of sf::Vector2i from the rooms
+  vector<sf::Vector2i> sfmlRooms;
+
+  // Convert each pair<int, int> to sf::Vector2i
+  for (const auto &room : rooms) {
+    sfmlRooms.push_back(sf::Vector2i(room.first, room.second));
   }
 
-  cout << "end";
+  // Create a rectangle and set its size based on the first room
+  if (!sfmlRooms.empty()) { // Check if there are rooms in the list
+    sf::RectangleShape rectangle;
+    // Setting the rectangle's size based on the first room coordinates
+    rectangle.setSize(
+        sf::Vector2f(rooms[0].second,
+                     rooms[0].first));         // Make sure these are reasonable
+                                               // values for width and height
+    rectangle.setFillColor(sf::Color::Blue);   // Fill color
+    rectangle.setOutlineThickness(5);          // Outline thickness
+    rectangle.setOutlineColor(sf::Color::Red); // Outline color
+    rectangle.setPosition(coords[0].first, window_height - rooms[0].second);
+    cout << "Height of room " << rooms[0].first << " \n";
+    cout << window_height << " positon y \n";
+
+    cout << window_height << endl;
+
+    cout << coords[0].first << " first rooms x\n";
+    cout << coords[0].second << " first rooms y\n";
+
+    // Start the SFML clock for frame timing
+    sf::Clock clock;
+
+    while (window.isOpen()) {
+      // Frame timing
+      sf::Time deltaTime = clock.restart();
+      float dt = deltaTime.asSeconds();
+
+      // Process window events
+      sf::Event event;
+      while (window.pollEvent(event)) {
+        if (event.type == sf::Event::Closed) {
+          cout << "Window closing...\n";
+          window.close();
+        }
+        if (event.type == sf::Event::KeyPressed) {
+          if (event.key.code == sf::Keyboard::Escape) {
+            cout << "Escape key pressed, closing window...\n";
+            window.close();
+          }
+        }
+      }
+
+      // Clear the window and draw the rectangle
+      window.clear(sf::Color::Black);
+      window.draw(rectangle);
+      window.display();
+    }
+  } else {
+    cout << "No rooms found, unable to create rectangle.\n";
+  }
+
+  cout << "End of program\n";
+  return 0;
 }
