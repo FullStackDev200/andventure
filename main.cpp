@@ -8,39 +8,41 @@
 #include <vector>
 
 using namespace std;
+using namespace adventure_graph;
 
-int main() {
+int main()
+{
   cout << "Program started\n";
 
-  adventure_graph::build_graph();
+  build_graph();
 
-  int window_length = adventure_graph::get_graph().size() - 1;
-  int window_height = adventure_graph::get_graph()[0].size();
+  int window_length = (get_graph().size() - 1) * 10;
+  int window_height = (get_graph()[0].size()) * 10;
 
   // Create SFML window
-  sf::RenderWindow window(sf::VideoMode(window_height, window_length),
-                          "SFML Window");
+  sf::RenderWindow window(sf::VideoMode(window_height, window_length), "SFML Window");
   cout << "Window created\n";
 
-  vector<pair<int, int>> skibidi = adventure_graph::get_coordinates();
+  vector<pair<int, int>> cords = get_coordinates();
 
-  for (const auto &p : skibidi) {
-    cout << "(" << p.first << ", " << p.second << ")" << endl;
-  };
+  print_coordinates_and_rooms;
+
   // Get rooms (this function should return a vector of pairs of integers)
-  vector<pair<int, int>> rooms = adventure_graph::get_rooms();
-  vector<pair<int, int>> coords = adventure_graph::get_coordinates();
+  vector<pair<int, int>> rooms = get_rooms();
+  vector<pair<int, int>> coords = get_coordinates();
 
   // Create a vector of sf::Vector2i from the rooms
   vector<sf::Vector2i> sfmlRooms;
 
   // Convert each pair<int, int> to sf::Vector2i
-  for (const auto &room : rooms) {
+  for (const auto &room : rooms)
+  {
     sfmlRooms.push_back(sf::Vector2i(room.first, room.second));
   }
 
   // Create a rectangle and set its size based on the first room
-  if (!sfmlRooms.empty()) { // Check if there are rooms in the list
+  if (!sfmlRooms.empty())
+  { // Check if there are rooms in the list
     sf::RectangleShape rectangle;
     // Setting the rectangle's size based on the first room coordinates
     rectangle.setSize(
@@ -62,20 +64,25 @@ int main() {
     // Start the SFML clock for frame timing
     sf::Clock clock;
 
-    while (window.isOpen()) {
+    while (window.isOpen())
+    {
       // Frame timing
       sf::Time deltaTime = clock.restart();
       float dt = deltaTime.asSeconds();
 
       // Process window events
       sf::Event event;
-      while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
+      while (window.pollEvent(event))
+      {
+        if (event.type == sf::Event::Closed)
+        {
           cout << "Window closing...\n";
           window.close();
         }
-        if (event.type == sf::Event::KeyPressed) {
-          if (event.key.code == sf::Keyboard::Escape) {
+        if (event.type == sf::Event::KeyPressed)
+        {
+          if (event.key.code == sf::Keyboard::Escape)
+          {
             cout << "Escape key pressed, closing window...\n";
             window.close();
           }
@@ -87,7 +94,9 @@ int main() {
       window.draw(rectangle);
       window.display();
     }
-  } else {
+  }
+  else
+  {
     cout << "No rooms found, unable to create rectangle.\n";
   }
 
