@@ -179,15 +179,15 @@ namespace adventure_graph
   bool scanRow(pair<int, int> rooms, pair<int, int> cords, pair<int, int> cord, pair<int, int> room, float j)
   {
 
-    if (cords.first - 5 <= cord.first && cords.second - 5 <= cord.second + room.second * (j / 4) && cords.first + rooms.first + 5 >= cord.first && cords.second + rooms.second + 5 >= cord.second + room.second * (j / 4))
+    if (cords.second - 5 <= cord.first && cords.first - 5 <= cord.second + room.first * (j / 4) && cords.second + rooms.second + 5 >= cord.first && cords.first + rooms.first + 5 >= cord.second + room.first * (j / 4))
       return true;
-    if (cords.first - 5 <= cord.first + room.first / 4 && cords.second - 5 <= cord.second + room.second * (j / 4) && cords.first + rooms.first + 5 >= cord.first + room.first / 4 && cords.second + rooms.second + 5 >= cord.second + room.second * (j / 4))
+    if (cords.second - 5 <= cord.first + room.second / 4 && cords.first - 5 <= cord.second + room.first * (j / 4) && cords.second + rooms.second + 5 >= cord.first + room.second / 4 && cords.first + rooms.first + 5 >= cord.second + room.first * (j / 4))
       return true;
-    if (cords.first - 5 <= cord.first + room.first / 2 && cords.second - 5 <= cord.second + room.second * (j / 4) && cords.first + rooms.first + 5 >= cord.first + room.first / 2 && cords.second + rooms.second + 5 >= cord.second + room.second * (j / 4))
+    if (cords.second - 5 <= cord.first + room.second / 2 && cords.first - 5 <= cord.second + room.first * (j / 4) && cords.second + rooms.second + 5 >= cord.first + room.second / 2 && cords.first + rooms.first + 5 >= cord.second + room.first * (j / 4))
       return true;
-    if (cords.first - 5 <= cord.first + room.first * 0.77 && cords.second - 5 <= cord.second + room.second * (j / 4) && cords.first + rooms.first + 5 >= cord.first + room.first * 0.77 && cords.second + rooms.second + 5 >= cord.second + room.second * (j / 4))
+    if (cords.second - 5 <= cord.first + room.second * 0.77 && cords.first - 5 <= cord.second + room.first * (j / 4) && cords.second + rooms.second + 5 >= cord.first + room.second * 0.77 && cords.first + rooms.first + 5 >= cord.second + room.first * (j / 4))
       return true;
-    if (cords.first - 5 <= cord.first + room.first * (j / 4) && cords.second - 5 <= cord.second + room.second && cords.first + rooms.first + 5 >= cord.first + room.first * (j / 4) && cords.second + rooms.second + 5 >= cord.second + room.second)
+    if (cords.second - 5 <= cord.first + room.second * (j / 4) && cords.first - 5 <= cord.second + room.first && cords.second + rooms.second + 5 >= cord.first + room.second * (j / 4) && cords.first + rooms.first + 5 >= cord.second + room.first)
       return true;
     return false;
   }
@@ -226,17 +226,17 @@ namespace adventure_graph
           inArea = true;
           connected.push_back(i);
         }
-        else if (coords[i].first + rooms[i].first + 7 >= cord.first + room.first && coords[i].first - 7 <= cord.first + room.first && coords[i].second + rooms[i].second + 7 >= cord.second && coords[i].second - 7 <= cord.second)
+        else if (coords[i].first + rooms[i].first + 7 >= cord.first + room.second && coords[i].first - 7 <= cord.first + room.second && coords[i].second + rooms[i].second + 7 >= cord.second && coords[i].second - 7 <= cord.second)
         {
           inArea = true;
           connected.push_back(i);
         }
-        else if (coords[i].first + rooms[i].first + 7 >= cord.first && coords[i].first - 7 <= cord.first && coords[i].second + rooms[i].second + 7 >= cord.second + room.second && coords[i].second - 7 <= cord.second + room.second)
+        else if (coords[i].first + rooms[i].first + 7 >= cord.first && coords[i].first - 7 <= cord.first && coords[i].second + rooms[i].second + 7 >= cord.second + room.first && coords[i].second - 7 <= cord.second + room.first)
         {
           inArea = true;
           connected.push_back(i);
         }
-        else if (coords[i].first + rooms[i].first + 7 >= cord.first + room.first && coords[i].first - 7 <= cord.first + room.first && coords[i].second + rooms[i].second + 7 >= cord.second + room.second && coords[i].second - 7 <= cord.second + room.second)
+        else if (coords[i].first + rooms[i].first + 7 >= cord.first + room.second && coords[i].first - 7 <= cord.first + room.second && coords[i].second + rooms[i].second + 7 >= cord.second + room.first && coords[i].second - 7 <= cord.second + room.first)
         {
           inArea = true;
           connected.push_back(i);
@@ -258,11 +258,11 @@ namespace adventure_graph
         coords.push_back(cord);
         rooms.push_back(room);
 
-        if (maxUp < room.first + cord.first + 7)
-          maxUp = room.first + cord.first + 7;
+        if (maxUp < room.second + cord.first + 7)
+          maxUp = room.second + cord.first + 7;
 
-        if (maxRight < room.second + cord.second + 7)
-          maxRight = room.second + cord.second + 7;
+        if (maxRight < room.first + cord.second + 7)
+          maxRight = room.first + cord.second + 7;
       }
     }
   }
