@@ -18,8 +18,8 @@ int main()
   vector<pair<int, int>> rooms = get_rooms();
   vector<pair<int, int>> coords = get_coordinates();
 
-  int window_width = ((get_graph().size() - 1) * 10);
-  int window_height = ((get_graph()[0].size()) * 10);
+  int window_width = (get_graph().size() - 1);
+  int window_height = (get_graph()[0].size());
 
   // Create SFML window
   sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML Window");
