@@ -2,8 +2,10 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
+#include <ostream>
 #include <utility>
 #include <vector>
 
@@ -16,7 +18,7 @@ int main() {
 
   vector<pair<int, int>> rooms = get_rooms();
   vector<pair<int, int>> coords = get_coordinates();
-  vector<pair<int, int>>get_path_coords = get_path_cords();
+  vector<pair<pair<int,int>, pair<int, int>>> middles = get_middles();
 
   int window_width = (get_graph().size() - 1);
   int window_height = (get_graph()[0].size());
@@ -30,10 +32,19 @@ int main() {
   vector<sf::RectangleShape> rectangles;
   cout << "before loop" << endl;
 
-  for (int i = 0; i < get_path_coords.size(); i++) {
-    path_points.append(sf::Vertex(sf::Vector2f( get_path_coords[i].second, window_height-get_path_coords[i].first), sf::Color::Red));
-  };
 
+  // Paths
+  vector<sf::Vertex *> paths;
+
+  for (int i = 0; i < rooms.size() - 1; i++) {
+    sf::Vertex path[] = {
+        sf::Vertex(sf::Vector2f(
+            middles[i].first.first, middles[i].first.second)),
+        sf::Vertex(sf::Vector2f(
+            middles[i].second.first, middles[i].second.second))};
+    paths.push_back(path);
+    cout<<"skibidi"<<endl;
+  }
 
   //
   for (int i = 0; i < rooms.size(); i++) {
@@ -72,7 +83,6 @@ int main() {
 
 
 
-
   while (window.isOpen()) {
     // Frame timing
     sf::Time deltaTime = clock.restart();
@@ -93,11 +103,15 @@ int main() {
 
     // Clear the window and draw the rectangle
     window.clear(sf::Color::Black);
-    for (int i = 0; i < rectangles.size(); i++) {
+    for (int i = 0; i < rectangles.size() - 1; i++) {
+      cout<<"rectangles"<<endl;
       window.draw(rectangles[i]);
     }
 
-    window.draw(path_points);
+    for(int i = 0; i< paths.size() - 1; i++){
+      window.draw(paths[i], paths.size(), sf::LinesStrip);
+    }
+
     window.display();
   }
 
