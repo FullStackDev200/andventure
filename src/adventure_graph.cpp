@@ -11,7 +11,7 @@ namespace adventure_graph
   uniform_int_distribution<> dist3(0, 1);
   uniform_int_distribution<> dist6(0, 2);
 
-  vector<pair<int, int>> rooms, coords, paths;
+  vector<pair<int, int>> rooms, coords, paths, path_cords;
   vector<vector<char>> graph;
 
   void print_coordinates_and_rooms()
@@ -72,6 +72,11 @@ namespace adventure_graph
     return graph;
   }
 
+  vector<pair<int, int>> get_path_cords()
+  {
+    return path_cords;
+  }
+
   vector<vector<char>> put_rooms_to_graph(int maxRight, int maxUp)
   {
     vector<vector<char>> graph(maxRight, vector<char>(maxUp, ' '));
@@ -109,7 +114,9 @@ namespace adventure_graph
       for (size_t x = min(middle1.first, middle2.first); x <= max(middle1.first, middle2.first); x++)
       {
         graph[x][middle1.second] = 'X';
+        path_cords.push_back({middle1.second, x});
         graph[x][middle1.second - 1] = 'X';
+        path_cords.push_back({middle1.second - 1, x});
       }
       return;
     }
@@ -117,14 +124,18 @@ namespace adventure_graph
     for (size_t x = min(middle1.second, middle2.second); x <= max(middle1.second, middle2.second); x++)
     {
       graph[middle1.first + formula(x)][x] = 'X';
+      path_cords.push_back({x, middle1.first + formula(x)});
       graph[middle1.first + formula(x)][x - 1] = 'X';
+      path_cords.push_back({x - 1, middle1.first + formula(x)});
 
       if (formula(x) - formula(x - 1) > 1 && x != min(middle1.second, middle2.second))
       {
         for (size_t i = 0; i < formula(x) - formula(x - 1); i++)
         {
           graph[middle1.first + formula(x) - i][x] = 'X';
+          path_cords.push_back({x, middle1.first + formula(x) - i});
           graph[middle1.first + formula(x) - i][x - 1] = 'X';
+          path_cords.push_back({x - 1, middle1.first + formula(x) - i});
         }
       }
       else if ((formula(x - 1) - formula(x) > 1) && x != min(middle1.second, middle2.second))
@@ -132,7 +143,9 @@ namespace adventure_graph
         for (size_t i = 0; i < formula(x - 1) - formula(x); i++)
         {
           graph[middle1.first + formula(x) + i][x] = 'X';
+          path_cords.push_back({x, middle1.first + formula(x) + i});
           graph[middle1.first + formula(x) + i][x - 1] = 'X';
+          path_cords.push_back({x - 1, middle1.first + formula(x) + i});
         }
       }
     }
