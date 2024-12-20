@@ -33,50 +33,37 @@ int main() {
   cout << "before loop" << endl;
 
 
-  // Paths
-  vector<sf::Vertex *> paths;
 
-  for (int i = 0; i < rooms.size() - 1; i++) {
-    sf::Vertex path[] = {
-        sf::Vertex(sf::Vector2f(
-            middles[i].first.first, middles[i].first.second)),
-        sf::Vertex(sf::Vector2f(
-            middles[i].second.first, middles[i].second.second))};
-    paths.push_back(path);
-    cout<<"skibidi"<<endl;
-  }
-
-  //
+  //Rectangles
   for (int i = 0; i < rooms.size(); i++) {
 
     sf::RectangleShape rectangle;
 
     rectangle.setSize(
-        sf::Vector2f(rooms[i].first,
-                     rooms[i].second));      // Make sure these are reasonable
-                                             // values for width and height
+      sf::Vector2f(rooms[i].first,
+                   rooms[i].second));      // Make sure these are reasonable
+    // values for width and height
     rectangle.setFillColor(sf::Color::Blue); // Fill color
     /*rectangle.setOutlineThickness(5);          // Outline thickness*/
     /*rectangle.setOutlineColor(sf::Color::Red); // Outline color*/
     cout << "rooms cords" << "x " << coords[i].first << " y "
-         << rooms[i].second;
+      << rooms[i].second;
     rectangle.setPosition(coords[i].first,
                           window_height - rooms[i].second - coords[i].second);
     rectangles.push_back(rectangle);
   }
 
-  /*// Check if there are rooms in the list*/
-  /*sf::RectangleShape rectangle;*/
-  /*// Setting the rectangle's size based on the second room coordinates*/
-  /*rectangle.setSize(*/
-  /*    sf::Vector2f(rooms[0].first,*/
-  /*                 rooms[0].second));        // Make sure these are
-   * reasonable*/
-  /*                                           // values for width and height*/
-  /*rectangle.setFillColor(sf::Color::Blue);   // Fill color*/
-  /*rectangle.setOutlineThickness(5);          // Outline thickness*/
-  /*rectangle.setOutlineColor(sf::Color::Red); // Outline color*/
-  /*rectangle.setPosition(0, window_height - rooms[0].second);*/
+  // Paths
+  vector<sf::Vertex *> paths;
+
+  for (int i = 0; i < rooms.size() - 1; i++) {
+    sf::Vertex path[] = {
+      sf::Vertex(sf::Vector2f(
+        middles[i].first.first, middles[i].first.second)),
+      sf::Vertex(sf::Vector2f(
+        middles[i].second.first, middles[i].second.second))};
+    paths.push_back(path);
+  }
 
   // Start the SFML clock for frame timing
   sf::Clock clock;
@@ -104,14 +91,12 @@ int main() {
     // Clear the window and draw the rectangle
     window.clear(sf::Color::Black);
     for (int i = 0; i < rectangles.size() - 1; i++) {
-      cout<<"rectangles"<<endl;
       window.draw(rectangles[i]);
     }
 
-    for(int i = 0; i< paths.size() - 1; i++){
+    for (int i = 0; i < paths.size(); i++) {
       window.draw(paths[i], paths.size(), sf::LinesStrip);
     }
-
     window.display();
   }
 
