@@ -16,7 +16,8 @@ namespace adventure_graph {
     vector<pair<int, int>> get_paths();
     vector<pair<int, int>> get_coordinates();
     vector<pair<int, int>> get_rooms();
-    vector<pair<int,int>> get_path_cords();
+    vector<pair<pair<int,int>,pair<int,int>>> get_middles();
+
     vector<vector<char>> get_graph();
 }
 
