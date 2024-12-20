@@ -10,25 +10,33 @@
 using namespace std;
 using namespace adventure_graph;
 
-int main()
-{
+int main() {
 
   build_graph();
 
   vector<pair<int, int>> rooms = get_rooms();
   vector<pair<int, int>> coords = get_coordinates();
+  vector<pair<int, int>>get_path_coords;
 
   int window_width = (get_graph().size() - 1);
   int window_height = (get_graph()[0].size());
 
   // Create SFML window
-  sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML Window");
+  sf::RenderWindow window(sf::VideoMode(window_width, window_height),
+                          "SFML Window");
+
+  sf::VertexArray path_points(sf::Points);
 
   vector<sf::RectangleShape> rectangles;
   cout << "before loop" << endl;
 
-  for (int i = 0; i < rooms.size(); i++)
-  {
+  for (int i = 0; i < get_path_coords.size(); i++) {
+    path_points.append(sf::Vertex(sf::Vector2f(get_path_coords[i].first, get_path_coords[i].second), sf::Color::Red));
+  };
+
+
+  //
+  for (int i = 0; i < rooms.size(); i++) {
 
     sf::RectangleShape rectangle;
 
@@ -62,24 +70,22 @@ int main()
   // Start the SFML clock for frame timing
   sf::Clock clock;
 
-  while (window.isOpen())
-  {
+
+
+
+  while (window.isOpen()) {
     // Frame timing
     sf::Time deltaTime = clock.restart();
     float dt = deltaTime.asSeconds();
 
     // Process window events
     sf::Event event;
-    while (window.pollEvent(event))
-    {
-      if (event.type == sf::Event::Closed)
-      {
+    while (window.pollEvent(event)) {
+      if (event.type == sf::Event::Closed) {
         window.close();
       }
-      if (event.type == sf::Event::KeyPressed)
-      {
-        if (event.key.code == sf::Keyboard::Escape)
-        {
+      if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::Escape) {
           window.close();
         }
       }
@@ -87,10 +93,11 @@ int main()
 
     // Clear the window and draw the rectangle
     window.clear(sf::Color::Black);
-    for (int i = 0; i < rectangles.size(); i++)
-    {
+    for (int i = 0; i < rectangles.size(); i++) {
       window.draw(rectangles[i]);
     }
+
+    window.draw(path_points);
     window.display();
   }
 
