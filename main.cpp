@@ -16,7 +16,7 @@ int main() {
 
   vector<pair<int, int>> rooms = get_rooms();
   vector<pair<int, int>> coords = get_coordinates();
-  vector<pair<int, int>>get_path_coords;
+  vector<pair<int, int>>get_path_coords = get_path_cords();
 
   int window_width = (get_graph().size() - 1);
   int window_height = (get_graph()[0].size());
@@ -31,7 +31,7 @@ int main() {
   cout << "before loop" << endl;
 
   for (int i = 0; i < get_path_coords.size(); i++) {
-    path_points.append(sf::Vertex(sf::Vector2f(get_path_coords[i].first, get_path_coords[i].second), sf::Color::Red));
+    path_points.append(sf::Vertex(sf::Vector2f( get_path_coords[i].second, window_height-get_path_coords[i].first), sf::Color::Red));
   };
 
 
