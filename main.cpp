@@ -1,9 +1,12 @@
 #include "./src/adventure_graph.hpp"
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/PrimitiveType.hpp>
+#include <SFML/Graphics/Vertex.hpp>
 #include <SFML/System.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window.hpp>
+#include <array>
 #include <iostream>
 #include <ostream>
 #include <utility>
@@ -18,7 +21,7 @@ int main() {
 
   vector<pair<int, int>> rooms = get_rooms();
   vector<pair<int, int>> coords = get_coordinates();
-  vector<pair<pair<int,int>, pair<int, int>>> middles = get_middles();
+  vector<pair<pair<int, int>, pair<int, int>>> middles = get_middles();
 
   int window_width = (get_graph().size() - 1);
   int window_height = (get_graph()[0].size());
@@ -32,43 +35,54 @@ int main() {
   vector<sf::RectangleShape> rectangles;
   cout << "before loop" << endl;
 
-
-
-  //Rectangles
+  // Rectangles
   for (int i = 0; i < rooms.size(); i++) {
 
     sf::RectangleShape rectangle;
 
     rectangle.setSize(
-      sf::Vector2f(rooms[i].first,
-                   rooms[i].second));      // Make sure these are reasonable
+        sf::Vector2f(rooms[i].first,
+                     rooms[i].second)); // Make sure these are reasonable
     // values for width and height
     rectangle.setFillColor(sf::Color::Blue); // Fill color
     /*rectangle.setOutlineThickness(5);          // Outline thickness*/
     /*rectangle.setOutlineColor(sf::Color::Red); // Outline color*/
     cout << "rooms cords" << "x " << coords[i].first << " y "
-      << rooms[i].second;
+         << rooms[i].second;
     rectangle.setPosition(coords[i].first,
                           window_height - rooms[i].second - coords[i].second);
     rectangles.push_back(rectangle);
   }
 
+  /*// Paths*/
+  /*vector<sf::Vertex *> paths;*/
+  /**/
+  /*for (int i = 0; i < rooms.size() - 1; i++) {*/
+  /*  sf::Vertex path[] = {sf::Vertex(sf::Vector2f(middles[i].first.first,*/
+  /*                                               middles[i].first.second),*/
+  /*                                  sf::Color::Red),*/
+  /*                       sf::Vertex(sf::Vector2f(middles[i].second.first,*/
+  /*                                               middles[i].second.second),*/
+  /*                                  sf::Color::Red)};*/
+  /*  paths.push_back(path);*/
+  /*}*/
+
   // Paths
-  vector<sf::Vertex *> paths;
+  vector<std::array<sf::Vertex, 2>> paths;
 
   for (int i = 0; i < rooms.size() - 1; i++) {
-    sf::Vertex path[] = {
-      sf::Vertex(sf::Vector2f(
-        middles[i].first.first, middles[i].first.second)),
-      sf::Vertex(sf::Vector2f(
-        middles[i].second.first, middles[i].second.second))};
+    std::array<sf::Vertex, 2> path = {
+        sf::Vertex(sf::Vector2f(middles[i].first.first,
+                                window_height - middles[i].first.second),
+                   sf::Color::Red),
+        sf::Vertex(sf::Vector2f(middles[i].second.first,
+                                window_height - middles[i].second.second),
+                   sf::Color::Red)};
     paths.push_back(path);
   }
 
   // Start the SFML clock for frame timing
   sf::Clock clock;
-
-
 
   while (window.isOpen()) {
     // Frame timing
@@ -94,8 +108,11 @@ int main() {
       window.draw(rectangles[i]);
     }
 
-    for (int i = 0; i < paths.size(); i++) {
-      window.draw(paths[i], paths.size(), sf::LinesStrip);
+    /*for (int i = 0; i < paths.size(); i++) {*/
+    /*  window.draw(paths[i], 2, sf::Lines);*/
+    /*}*/
+    for (const auto &path : paths) {
+      window.draw(path.data(), 2, sf::Lines);
     }
     window.display();
   }
