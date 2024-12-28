@@ -16,7 +16,7 @@
 using namespace std;
 using namespace adventure_graph;
 
-void drawLine(sf::RenderWindow &window, sf::Vector2i point1, sf::Vector2i point2, int lineWidth, sf::Color lineColor)
+void drawLine(sf::RenderWindow &window, sf::Vector2i point1, sf::Vector2i point2, sf::Color lineColor)
 {
   int x0 = point1.x;
   int y0 = point1.y;
@@ -30,7 +30,7 @@ void drawLine(sf::RenderWindow &window, sf::Vector2i point1, sf::Vector2i point2
 
   while (true)
   {
-    sf::RectangleShape rect(sf::Vector2f(lineWidth, lineWidth));
+    sf::RectangleShape rect(sf::Vector2f(1, 1));
     rect.setFillColor(lineColor);
     rect.setPosition(x0, y0);
     window.draw(rect);
@@ -62,8 +62,7 @@ int main()
   int window_height = (get_graph()[0].size());
 
   // Create SFML window
-  sf::RenderWindow window(sf::VideoMode(window_width, window_height),
-                          "SFML Window");
+  sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML Window");
 
   sf::VertexArray path_points(sf::Points);
 
@@ -131,12 +130,16 @@ int main()
     // Draw lines using paths
     for (const auto &path : paths)
     {
-      sf::Vector2i start(path[0].position.x, path[0].position.y);
-      sf::Vector2i end(path[1].position.x, path[1].position.y);
-      drawLine(window, start, end, 2, sf::Color::Red);
+      sf::Vector2i start1(path[0].position.x, path[0].position.y);
+      sf::Vector2i end1(path[1].position.x, path[1].position.y);
+
+      sf::Vector2i start2(path[0].position.x, path[0].position.y - 1);
+      sf::Vector2i end2(path[1].position.x, path[1].position.y - 1);
+
+      drawLine(window, start1, end1, sf::Color::Red);
+      drawLine(window, start2, end2, sf::Color::Red);
     }
 
     window.display();
   }
-
 }

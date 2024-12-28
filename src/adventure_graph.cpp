@@ -27,20 +27,19 @@ namespace adventure_graph
 
   void print_graph()
   {
-    for (int i = graph.size() - 1; i > -1; i--)
+    for (int i = graph[0].size() - 1; i > -1; i--)
     {
-      cout << "\n";
-
       if (i < 10)
         cout << '0';
 
       cout << i << ':';
+      for (int j = 0; j < graph.size(); j++)
+      {
 
-      for (int j = 0; j < graph[0].size(); j++)
-        cout << graph[i][j];
+        cout << graph[j][i];
+      }
+      cout << "\n";
     }
-
-    cout << "\n";
   }
 
   void print_paths()
@@ -92,10 +91,9 @@ namespace adventure_graph
 
   auto get_formula(pair<float, float> middle1, pair<float, float> middle2, int length)
   {
-    int random = dist6(gen);
     return [middle1, middle2](int x)
     {
-      return (middle2.first - middle1.first) / (middle2.second - middle1.second) * (x - middle1.second);
+      return ((middle2.first - middle1.first) / (middle2.second - middle1.second) - 0) * (x - middle1.second);
     };
   }
 
@@ -114,23 +112,23 @@ namespace adventure_graph
 
     for (size_t x = min(middle1.second, middle2.second); x <= max(middle1.second, middle2.second); x++)
     {
-      graph[middle1.first + formula(x)][x] = 'X';
-      graph[middle1.first + formula(x)][x - 1] = 'X';
+      graph[middle1.first + ceill(formula(x))][x] = 'X';
+      graph[middle1.first + ceill(formula(x))][x - 1] = 'X';
 
-      if (formula(x) - formula(x - 1) > 1 && x != min(middle1.second, middle2.second))
+      if (ceill(formula(x)) - formula(x - 1) > 1 && x != min(middle1.second, middle2.second))
       {
-        for (size_t i = 0; i < formula(x) - formula(x - 1); i++)
+        for (size_t i = 0; i < ceill(formula(x)) - formula(x - 1); i++)
         {
-          graph[middle1.first + formula(x) - i][x] = 'X';
-          graph[middle1.first + formula(x) - i][x - 1] = 'X';
+          graph[middle1.first + ceill(formula(x)) - i][x] = 'X';
+          graph[middle1.first + ceill(formula(x)) - i][x - 1] = 'X';
         }
       }
-      else if ((formula(x - 1) - formula(x) > 1) && x != min(middle1.second, middle2.second))
+      else if ((formula(x - 1) - ceill(formula(x)) > 1) && x != min(middle1.second, middle2.second))
       {
-        for (size_t i = 0; i < formula(x - 1) - formula(x); i++)
+        for (size_t i = 0; i < formula(x - 1) - ceill(formula(x)); i++)
         {
-          graph[middle1.first + formula(x) + i][x] = 'X';
-          graph[middle1.first + formula(x) + i][x - 1] = 'X';
+          graph[middle1.first + ceill(formula(x)) + i][x] = 'X';
+          graph[middle1.first + ceill(formula(x)) + i][x - 1] = 'X';
         }
       }
     }
@@ -153,7 +151,7 @@ namespace adventure_graph
       int b = paths[i].second;
 
       pair<float, float> middle1 = {rooms[a].first / 2 + coords[a].first, rooms[a].second / 2 + coords[a].second};
-      pair<float, float> middle2 = {rooms[b].first / 2 + coords[b].first, rooms[b].second / 2 + coords[b].second};
+      pair<float, float> middle2 = {rooms[b].first / 2 + coords[b].first, rooms[b].second / 2 + coords[b].second - 1};
 
       middles.push_back({middle1, middle2});
 
