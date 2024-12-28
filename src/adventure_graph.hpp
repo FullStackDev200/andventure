@@ -19,6 +19,9 @@ namespace adventure_graph {
     vector<pair<pair<int,int>,pair<int,int>>> get_middles();
 
     vector<vector<char>> get_graph();
+
+    pair<int, int> get_location();
+    pair<int,int> change_location(pair<int,int> location_new);
 }
 
 #endif // ROOM_COORDS
