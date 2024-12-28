@@ -89,7 +89,7 @@ int main()
   // Paths
   vector<std::array<sf::Vertex, 2>> paths;
 
-  for (int i = 0; i < rooms.size() - 1; i++)
+  for (int i = 0; i < rooms.size(); i++)
   {
     std::array<sf::Vertex, 2> path = {
         sf::Vertex(sf::Vector2f(middles[i].first.first, window_height - middles[i].first.second),
@@ -138,7 +138,5 @@ int main()
 
     window.display();
   }
-
-  
 
 }
