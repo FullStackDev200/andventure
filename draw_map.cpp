@@ -68,8 +68,7 @@ int main() {
     for (int i = 0; i < rooms.size(); i++) {
         sf::RectangleShape rectangle;
 
-        rectangle.setSize(sf::Vector2f(rooms[i].first,
-                                       rooms[i].second));  // Make sure these are reasonable
+        rectangle.setSize(sf::Vector2f(rooms[i].first, rooms[i].second));  // Make sure these are reasonable
         // values for width and height
         rectangle.setFillColor(sf::Color::Blue);  // Fill color
         /*rectangle.setOutlineThickness(5);          // Outline thickness*/
@@ -82,7 +81,7 @@ int main() {
     // Paths
     vector<std::array<sf::Vertex, 2>> paths;
 
-    for (int i = 0; i < rooms.size() - 1; i++) {
+    for (int i = 0; i < rooms.size(); i++) {
         std::array<sf::Vertex, 2> path = {sf::Vertex(sf::Vector2f(middles[i].first.first, window_height - middles[i].first.second), sf::Color::Red),
                                           sf::Vertex(sf::Vector2f(middles[i].second.first, window_height - middles[i].second.second), sf::Color::Red)};
         paths.push_back(path);
@@ -119,7 +118,4 @@ int main() {
 
         window.display();
     }
-
-    // Ensure return outside the loop
-    return 0;
 }
