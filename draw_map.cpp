@@ -46,6 +46,7 @@ void drawLine(sf::RenderWindow &window, sf::Vector2i point1,
     }
   }
 }
+
 int main() {
 
   build_graph();
@@ -84,19 +85,6 @@ int main() {
                           window_height - rooms[i].second - coords[i].second);
     rectangles.push_back(rectangle);
   }
-
-  /*// Paths*/
-  /*vector<sf::Vertex *> paths;*/
-  /**/
-  /*for (int i = 0; i < rooms.size() - 1; i++) {*/
-  /*  sf::Vertex path[] = {sf::Vertex(sf::Vector2f(middles[i].first.first,*/
-  /*                                               middles[i].first.second),*/
-  /*                                  sf::Color::Red),*/
-  /*                       sf::Vertex(sf::Vector2f(middles[i].second.first,*/
-  /*                                               middles[i].second.second),*/
-  /*                                  sf::Color::Red)};*/
-  /*  paths.push_back(path);*/
-  /*}*/
 
   // Paths
   vector<std::array<sf::Vertex, 2>> paths;

@@ -31,5 +31,5 @@ run project
 build & run project
 
 ```shell
-g++ main.cpp -std=c++20 ./src/*.cpp -o ./output/main -lsfml-graphics -lsfml-window -lsfml-system && ./output/main
+g++ draw_map.cpp -std=c++20 ./src/*.cpp -o ./output/main -lsfml-graphics -lsfml-window -lsfml-system && ./output/main
 ```
