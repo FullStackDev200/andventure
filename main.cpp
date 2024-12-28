@@ -1,6 +1,7 @@
 #include "./src/adventure_graph.hpp"
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/Graphics/Vertex.hpp>
 #include <SFML/System.hpp>
@@ -15,6 +16,36 @@
 using namespace std;
 using namespace adventure_graph;
 
+void drawLine(sf::RenderWindow &window, sf::Vector2i point1,
+              sf::Vector2i point2, int lineWidth, sf::Color lineColor) {
+  int x0 = point1.x;
+  int y0 = point1.y;
+  int x1 = point2.x;
+  int y1 = point2.y;
+  int dx = abs(x1 - x0);
+  int sx = (x0 < x1) ? 1 : -1;
+  int dy = -abs(y1 - y0);
+  int sy = (y0 < y1) ? 1 : -1;
+  int err = dx + dy;
+
+  while (true) {
+    sf::RectangleShape rect(sf::Vector2f(lineWidth, lineWidth));
+    rect.setFillColor(lineColor);
+    rect.setPosition(x0, y0);
+    window.draw(rect);
+    if (x0 == x1 && y0 == y1)
+      break;
+    int e2 = 2 * err;
+    if (e2 >= dy) {
+      err += dy;
+      x0 += sx;
+    }
+    if (e2 <= dx) {
+      err += dx;
+      y0 += sy;
+    }
+  }
+}
 int main() {
 
   build_graph();
@@ -83,39 +114,38 @@ int main() {
 
   // Start the SFML clock for frame timing
   sf::Clock clock;
-
   while (window.isOpen()) {
-    // Frame timing
     sf::Time deltaTime = clock.restart();
     float dt = deltaTime.asSeconds();
 
     // Process window events
     sf::Event event;
     while (window.pollEvent(event)) {
-      if (event.type == sf::Event::Closed) {
+      if (event.type == sf::Event::Closed ||
+          (event.type == sf::Event::KeyPressed &&
+           event.key.code == sf::Keyboard::Escape)) {
         window.close();
       }
-      if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Escape) {
-          window.close();
-        }
-      }
     }
 
-    // Clear the window and draw the rectangle
+    // Clear the window
     window.clear(sf::Color::Black);
-    for (int i = 0; i < rectangles.size() - 1; i++) {
-      window.draw(rectangles[i]);
+
+    // Draw rectangles
+    for (const auto &rectangle : rectangles) {
+      window.draw(rectangle);
     }
 
-    /*for (int i = 0; i < paths.size(); i++) {*/
-    /*  window.draw(paths[i], 2, sf::Lines);*/
-    /*}*/
+    // Draw lines using paths
     for (const auto &path : paths) {
-      window.draw(path.data(), 2, sf::Lines);
+      sf::Vector2i start(path[0].position.x, path[0].position.y);
+      sf::Vector2i end(path[1].position.x, path[1].position.y);
+      drawLine(window, start, end, 2, sf::Color::Red);
     }
+
     window.display();
   }
 
+  // Ensure return outside the loop
   return 0;
 }
