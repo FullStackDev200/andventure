@@ -8,6 +8,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window.hpp>
 #include <array>
+#include <cmath>
 #include <iostream>
 #include <ostream>
 #include <utility>
@@ -43,92 +44,109 @@ void drawLine(sf::RenderWindow &window, sf::Vector2i point1, sf::Vector2i point2
             err += dx;
             y0 += sy;
         }
+    }
+}
 
-        int main() {
-            build_graph();
+int main() {
+    build_graph();
 
-            vector<pair<int, int>> rooms = get_rooms();
-            vector<pair<int, int>> coords = get_coordinates();
-            vector<pair<pair<int, int>, pair<int, int>>> middles = get_middles();
+    vector<pair<int, int>> rooms = get_rooms();
+    vector<pair<int, int>> coords = get_coordinates();
+    vector<pair<pair<int, int>, pair<int, int>>> middles = get_middles();
 
-            int window_width = (get_graph().size() - 1);
-            int window_height = (get_graph()[0].size());
+    int window_width = (get_graph().size() - 1);
+    int window_height = (get_graph()[0].size());
 
-            // Create SFML window
-            sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML Window");
+    // Create SFML window
+    sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML Window");
 
-            sf::VertexArray path_points(sf::Points);
+    sf::VertexArray path_points(sf::Points);
 
-            vector<sf::RectangleShape> rectangles;
-            cout << "before loop" << endl;
+    vector<sf::RectangleShape> rectangles;
+    cout << "before loop" << endl;
 
-            // Rectangles
-            for (int i = 0; i < rooms.size(); i++) {
-                sf::RectangleShape rectangle;
+    // Rectangles
+    for (int i = 0; i < rooms.size(); i++) {
+        sf::RectangleShape rectangle;
 
-                rectangle.setSize(sf::Vector2f(rooms[i].first, rooms[i].second));  // Make sure these are reasonable
-                // values for width and height
-                rectangle.setFillColor(sf::Color::Blue);  // Fill color
-                /*rectangle.setOutlineThickness(5);          // Outline thickness*/
-                /*rectangle.setOutlineColor(sf::Color::Red); // Outline color*/
-                cout << "rooms cords" << "x " << coords[i].first << " y " << rooms[i].second;
-                rectangle.setPosition(coords[i].first, window_height - rooms[i].second - coords[i].second);
-                rectangles.push_back(rectangle);
+        rectangle.setSize(sf::Vector2f(rooms[i].first,
+                                       rooms[i].second));  // Make sure these are reasonable
+        // values for width and height
+        rectangle.setFillColor(sf::Color::Blue);  // Fill color
+        /*rectangle.setOutlineThickness(5);          // Outline thickness*/
+        /*rectangle.setOutlineColor(sf::Color::Red); // Outline color*/
+        cout << "rooms cords" << "x " << coords[i].first << " y " << rooms[i].second;
+        rectangle.setPosition(coords[i].first, window_height - rooms[i].second - coords[i].second);
+        rectangles.push_back(rectangle);
+    }
+
+    // Paths
+    vector<std::array<sf::Vertex, 2>> paths;
+
+    for (int i = 0; i < rooms.size() - 1; i++) {
+        std::array<sf::Vertex, 2> path = {sf::Vertex(sf::Vector2f(middles[i].first.first, window_height - middles[i].first.second), sf::Color::Red),
+                                          sf::Vertex(sf::Vector2f(middles[i].second.first, window_height - middles[i].second.second), sf::Color::Red)};
+        paths.push_back(path);
+    }
+
+    // Player
+    sf::RectangleShape player;
+    player.setSize(sf::Vector2f(10, 10));       // Increase the size of the player
+    player.setPosition(0, window_height - 10);  // Move the player within the window
+    player.setOutlineColor(sf::Color::Green);
+    player.setFillColor(sf::Color::Green);
+
+    float playerSpeed = 2;  // Pixels per second
+
+    // Start the SFML clock for frame timing
+    sf::Clock clock;
+    while (window.isOpen()) {
+        sf::Time deltaTime = clock.restart();
+        float dt = deltaTime.asSeconds();
+
+        // Process window events
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)) {
+                window.close();
             }
 
-            // Paths
-            vector<std::array<sf::Vertex, 2>> paths;
+            window.clear();
 
-            for (int i = 0; i < rooms.size(); i++) {
-                std::array<sf::Vertex, 2> path = {sf::Vertex(sf::Vector2f(middles[i].first.first, window_height - middles[i].first.second), sf::Color::Red),
-                                                  sf::Vertex(sf::Vector2f(middles[i].second.first, window_height - middles[i].second.second), sf::Color::Red)};
-                paths.push_back(path);
+            // Draw rectangles
+            for (const auto &rectangle : rectangles) {
+                window.draw(rectangle);
             }
 
-            // Start the SFML clock for frame timing
-            sf::Clock clock;
-            while (window.isOpen()) {
-                sf::Time deltaTime = clock.restart();
-                float dt = deltaTime.asSeconds();
-
-                // Process window events
-                sf::Event event;
-                while (window.pollEvent(event)) {
-                    if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)) {
-                        window.close();
-                    }
-                }
-
-                // Clear the window
-                window.clear(sf::Color::Black);
-
-                // Draw rectangles
-                for (const auto &rectangle : rectangles) {
-                    window.draw(rectangle);
-                }
-
-                // Draw lines using paths
-                for (const auto &path : paths) {
-                    sf::Vector2i start(path[0].position.x, path[0].position.y);
-                    sf::Vector2i end(path[1].position.x, path[1].position.y);
-                    drawLine(window, start, end, 2, sf::Color::Red);
-                }
-
-                window.display();
-            }
             // Draw lines using paths
             for (const auto &path : paths) {
-                sf::Vector2i start1(path[0].position.x, path[0].position.y);
-                sf::Vector2i end1(path[1].position.x, path[1].position.y);
-
-                sf::Vector2i start2(path[0].position.x, path[0].position.y - 1);
-                sf::Vector2i end2(path[1].position.x, path[1].position.y - 1);
-
-                drawLine(window, start1, end1, sf::Color::Red);
-                drawLine(window, start2, end2, sf::Color::Red);
+                sf::Vector2i start(path[0].position.x, path[0].position.y);
+                sf::Vector2i end(path[1].position.x, path[1].position.y);
+                drawLine(window, start, end, 2, sf::Color::Red);
             }
+
+            // Player movement
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && player.getPosition().x > 0) {
+                player.move(-playerSpeed, 0);
+            }
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && player.getPosition().x + player.getSize().x < window_width) {
+                player.move(playerSpeed, 0);
+            }
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.getPosition().y > 0) {
+                player.move(0, -playerSpeed);
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && player.getPosition().y + player.getSize().y < window_height) {
+                player.move(0, playerSpeed);
+            }
+
+            std::cout << "Player Position: (" << player.getPosition().x << ", " << player.getPosition().y << ")" << std::endl;
+            window.draw(player);
 
             window.display();
         }
     }
+    // Ensure return outside the loop
+    return 0;
 }
