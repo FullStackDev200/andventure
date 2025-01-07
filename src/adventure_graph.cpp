@@ -105,32 +105,35 @@ namespace adventure_graph
       for (size_t x = min(middle1.first, middle2.first); x <= max(middle1.first, middle2.first); x++)
       {
         graph[x][middle1.second] = 'X';
-        // graph[x][middle1.second - 1] = 'X';
+        graph[x][middle1.second - 1] = 'X';
       }
       return;
     }
 
     for (size_t x = min(middle1.second, middle2.second); x <= max(middle1.second, middle2.second); x++)
     {
-      graph[middle1.first + ceill(formula(x))][x] = 'X';
-      // graph[middle1.first + ceill(formula(x))][x - 1] = 'X';
+      float form = formula(x);
+      graph[middle1.first + form][x] = 'X';
+      graph[middle1.first + form - 1][x] = 'X';
+      graph[middle1.first + form][x - 1] = 'X';
+      graph[middle1.first + form - 1][x - 1] = 'X';
 
-      // if (ceill(formula(x)) - formula(x - 1) > 1 && x != min(middle1.second, middle2.second))
-      // {
-      //   for (size_t i = 0; i < ceill(formula(x)) - formula(x - 1); i++)
-      //   {
-      //     graph[middle1.first + ceill(formula(x)) - i][x] = 'X';
-      //     // graph[middle1.first + ceill(formula(x)) - i][x - 1] = 'X';
-      //   }
-      // }
-      // else if ((formula(x - 1) - ceill(formula(x)) > 1) && x != min(middle1.second, middle2.second))
-      // {
-      //   for (size_t i = 0; i < formula(x - 1) - ceill(formula(x)); i++)
-      //   {
-      //     graph[middle1.first + ceill(formula(x)) + i][x] = 'X';
-      //     // graph[middle1.first + ceill(formula(x)) + i][x - 1] = 'X';
-      //   }
-      // }
+      if (form - formula(x - 1) > 1 && x != min(middle1.second, middle2.second))
+      {
+        for (size_t i = 2; i <= form - formula(x - 1); i++)
+        {
+          graph[middle1.first + form - i][x] = 'X';
+          graph[middle1.first + form - i][x - 1] = 'X';
+        }
+      }
+      else if (formula(x - 1) - form > 1 && x != max(middle1.second, middle2.second))
+      {
+        for (size_t i = 2; i <= formula(x - 1) - form; i++)
+        {
+          graph[middle1.first + form - i][x] = 'X';
+          graph[middle1.first + form - i][x - 1] = 'X';
+        }
+      }
     }
   }
 
@@ -155,9 +158,6 @@ namespace adventure_graph
 
       middles.push_back({middle1, middle2});
 
-      make_path(middle1, middle2, graph);
-      middle1.first--;
-      middle2.first--;
       make_path(middle1, middle2, graph);
     }
 
