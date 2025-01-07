@@ -1,0 +1,18 @@
+---
+BasedOnStyle: Google # or LLVM, Microsoft, Chromium, WebKit, Mozilla
+TabWidth: 4          # Width of a tab character
+UseTab: Never        # Options: Never, ForIndentation, Always
+ColumnLimit: 200     # Maximum column width
+BreakBeforeBraces: Allman # Options: Attach, Linux, Allman, Stroustrup
+AllowShortIfStatementsOnASingleLine: false
+NamespaceIndentation: All # Options: None, Inner, All
+PointerAlignment: Left    # Options: Left, Right, Middle
+SpacesInParentheses: false
+SpacesInAngles: false
+IncludeBlocks: Preserve   # Options: Merge, Preserve
+SortIncludes: true
+ReflowComments: true
+AllowShortFunctionsOnASingleLine: Empty # Options: None, Inline, Empty, All
+AlwaysBreakTemplateDeclarations: Yes
+Cpp11BracedListStyle: true
+---

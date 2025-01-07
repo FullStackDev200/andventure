@@ -8,11 +8,11 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window.hpp>
 #include <array>
+#include <cmath>
 #include <iostream>
 #include <ostream>
 #include <utility>
 #include <vector>
-#include <cmath>
 
 using namespace std;
 using namespace adventure_graph;
@@ -46,15 +46,12 @@ using namespace adventure_graph;
 //   }
 // }
 
-auto get_formula(pair<float, float> middle1, pair<float, float> middle2)
+auto get_formula(pair<float, float> &middle1, pair<float, float> &middle2)
 {
-  return [middle1, middle2](int x)
-  {
-    return (middle2.first - middle1.first) / (middle2.second - middle1.second) * (x - middle1.second);
-  };
+  return [middle1, middle2](int x) { return (middle2.first - middle1.first) / (middle2.second - middle1.second) * (x - middle1.second); };
 }
 
-void drawLine(sf::RenderWindow &window, pair<float, float> middle1, pair<float, float> middle2, sf::Color lineColor, int window_height)
+void drawLine(sf::RenderWindow &window, pair<float, float> &middle1, pair<float, float> &middle2, sf::Color lineColor, int &window_height)
 {
   sf::RectangleShape rect(sf::Vector2f(1, 1));
   rect.setFillColor(lineColor);
@@ -110,7 +107,6 @@ void drawLine(sf::RenderWindow &window, pair<float, float> middle1, pair<float, 
 
 int main()
 {
-
   build_graph();
 
   vector<pair<int, int>> rooms = get_rooms();
@@ -121,8 +117,7 @@ int main()
   int window_height = (get_graph()[0].size());
 
   // Create SFML window
-  sf::RenderWindow window(sf::VideoMode(window_width, window_height),
-                          "SFML Window");
+  sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML Window");
 
   sf::VertexArray path_points(sf::Points);
 
@@ -132,38 +127,25 @@ int main()
   // Rectangles
   for (int i = 0; i < rooms.size(); i++)
   {
-
     sf::RectangleShape rectangle;
 
-    rectangle.setSize(
-        sf::Vector2f(rooms[i].first,
-                     rooms[i].second)); // Make sure these are reasonable
-    // values for width and height
-    rectangle.setFillColor(sf::Color::Blue); // Fill color
-    /*rectangle.setOutlineThickness(5);          // Outline thickness*/
-    /*rectangle.setOutlineColor(sf::Color::Red); // Outline color*/
-    cout << "rooms cords" << "x " << coords[i].first << " y "
-         << rooms[i].second;
-    rectangle.setPosition(coords[i].first,
-                          window_height - rooms[i].second - coords[i].second);
+    rectangle.setSize(sf::Vector2f(rooms[i].first, rooms[i].second));
+    rectangle.setFillColor(sf::Color::Blue);
+
+    cout << "rooms cords" << "x " << coords[i].first << " y " << rooms[i].second;
+    rectangle.setPosition(coords[i].first, window_height - rooms[i].second - coords[i].second);
     rectangles.push_back(rectangle);
   }
 
-  // Paths
-  // vector<std::array<sf::Vertex, 2>> paths;
+  // Player
+  sf::RectangleShape player;
+  player.setSize(sf::Vector2f(10, 10));       // Increase the size of the player
+  player.setPosition(0, window_height - 10);  // Move the player within the window
+  player.setOutlineColor(sf::Color::Green);
+  player.setFillColor(sf::Color::Green);
+  
+  float playerSpeed = 2;
 
-  // for (int i = 0; i < rooms.size() - 1; i++)
-  // {
-  //   std::array<sf::Vertex, 2> path = {
-  //       sf::Vertex(sf::Vector2f(middles[i].first.first,
-  //                               window_height - middles[i].first.second),
-  //                  sf::Color::Red),
-  //       sf::Vertex(sf::Vector2f(middles[i].second.first,
-  //                               window_height - middles[i].second.second),
-  //                  sf::Color::Red)};
-  //   paths.push_back(path);
-  // }
-  // Start the SFML clock for frame timing
   sf::Clock clock;
   while (window.isOpen())
   {
@@ -174,9 +156,7 @@ int main()
     sf::Event event;
     while (window.pollEvent(event))
     {
-      if (event.type == sf::Event::Closed ||
-          (event.type == sf::Event::KeyPressed &&
-           event.key.code == sf::Keyboard::Escape))
+      if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
       {
         window.close();
       }
@@ -198,9 +178,31 @@ int main()
       drawLine(window, start, end, sf::Color::Red, window_height);
     }
 
+    // Player movement
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && player.getPosition().x > 0)
+    {
+      player.move(-playerSpeed, 0);
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && player.getPosition().x + player.getSize().x < window_width)
+    {
+      player.move(playerSpeed, 0);
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.getPosition().y > 0)
+    {
+      player.move(0, -playerSpeed);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && player.getPosition().y + player.getSize().y < window_height)
+    {
+      player.move(0, playerSpeed);
+    }
+
+    std::cout << "Player Position: (" << player.getPosition().x << ", " << player.getPosition().y << ")" << std::endl;
+    window.draw(player);
+
     window.display();
   }
 
-  // Ensure return outside the loop
   return 0;
 }
