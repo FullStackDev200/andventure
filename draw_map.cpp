@@ -24,6 +24,26 @@ auto get_formula(pair<float, float> &middle1, pair<float, float> &middle2)
   return [middle1, middle2](int x) { return (middle2.first - middle1.first) / (middle2.second - middle1.second) * (x - middle1.second); };
 }
 
+bool isContained(sf::RectangleShape player, vector<sf::RectangleShape> rooms)
+{
+  // Get the global bounds of both rectangles
+  sf::FloatRect innerBounds = player.getGlobalBounds();
+
+  bool isWalkable = false;
+  for (auto room : rooms)
+  {
+    sf::FloatRect outerBounds = room.getGlobalBounds();
+    if (innerBounds.left >= outerBounds.left && innerBounds.top >= outerBounds.top && innerBounds.left + innerBounds.width <= outerBounds.left + outerBounds.width &&
+        innerBounds.top + innerBounds.height <= outerBounds.top + outerBounds.height)
+    {
+      isWalkable = true;
+      break;
+    }
+  }
+
+  return isWalkable;
+}
+
 void drawLine(sf::RenderWindow &window, pair<float, float> &middle1, pair<float, float> &middle2, sf::Color lineColor, int &window_height)
 {
   sf::RectangleShape rect(sf::Vector2f(1, 1));
@@ -195,7 +215,7 @@ int main()
       player.move(0, playerSpeed);
     }
 
-    if (!is_on_walkable_area(player, sf_rooms))
+    if (!isContained(player, sf_rooms))
     {
       std::cout << "Collision detected! Reverting movement.\n";
       player.setPosition(originalPosition);  // Revert to the original position
