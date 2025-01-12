@@ -19,9 +19,12 @@
 using namespace std;
 using namespace adventure_graph;
 
+vector<sf::RectangleShape> sf_paths;
+
 auto get_formula(pair<float, float> &middle1, pair<float, float> &middle2)
 {
-  return [middle1, middle2](int x) { return (middle2.first - middle1.first) / (middle2.second - middle1.second) * (x - middle1.second); };
+  return [middle1, middle2](int x)
+  { return (middle2.first - middle1.first) / (middle2.second - middle1.second) * (x - middle1.second); };
 }
 
 bool isContained(sf::RectangleShape player, vector<sf::RectangleShape> rooms)
@@ -55,8 +58,10 @@ void drawLine(sf::RenderWindow &window, pair<float, float> &middle1, pair<float,
     for (size_t x = min(middle1.first, middle2.first); x <= max(middle1.first, middle2.first); x++)
     {
       rect.setPosition(x, window_height - middle1.second);
+      sf_paths.push_back(rect);
       window.draw(rect);
       rect.setPosition(x, window_height - middle1.second - 1);
+      sf_paths.push_back(rect);
       window.draw(rect);
     }
     return;
@@ -67,12 +72,20 @@ void drawLine(sf::RenderWindow &window, pair<float, float> &middle1, pair<float,
     int form = formula(x);
 
     rect.setPosition(middle1.first + form, window_height - x);
+    sf_paths.push_back(rect);
+
     window.draw(rect);
     rect.setPosition(middle1.first + form, window_height - x - 1);
+    sf_paths.push_back(rect);
+
     window.draw(rect);
     rect.setPosition(middle1.first + form - 1, window_height - x);
+    sf_paths.push_back(rect);
+
     window.draw(rect);
     rect.setPosition(middle1.first + form - 1, window_height - x - 1);
+    sf_paths.push_back(rect);
+
     window.draw(rect);
 
     if (form - formula(x - 1) > 1 && x != min(middle1.second, middle2.second))
@@ -80,8 +93,12 @@ void drawLine(sf::RenderWindow &window, pair<float, float> &middle1, pair<float,
       for (size_t i = 2; i <= form - formula(x - 1); i++)
       {
         rect.setPosition(middle1.first + form - i, window_height - x);
+        sf_paths.push_back(rect);
+
         window.draw(rect);
         rect.setPosition(middle1.first + form - i, window_height - x - 1);
+        sf_paths.push_back(rect);
+
         window.draw(rect);
       }
     }
@@ -91,7 +108,9 @@ void drawLine(sf::RenderWindow &window, pair<float, float> &middle1, pair<float,
       {
         rect.setPosition(middle1.first + form - i, window_height - x);
         window.draw(rect);
+        sf_paths.push_back(rect);
         rect.setPosition(middle1.first + form - i, window_height - x - 1);
+        sf_paths.push_back(rect);
         window.draw(rect);
       }
     }
@@ -153,8 +172,8 @@ int main()
 
   // Player
   sf::RectangleShape player;
-  player.setSize(sf::Vector2f(5, 5));         // Increase the size of the player
-  player.setPosition(0, window_height - 10);  // Move the player within the window
+  player.setSize(sf::Vector2f(1, 1));        // Increase the size of the player
+  player.setPosition(0, window_height - 10); // Move the player within the window
   player.setOutlineColor(sf::Color::Green);
   player.setFillColor(sf::Color::Green);
 
@@ -218,7 +237,7 @@ int main()
     if (!isContained(player, sf_rooms))
     {
       std::cout << "Collision detected! Reverting movement.\n";
-      player.setPosition(originalPosition);  // Revert to the original position
+      player.setPosition(originalPosition); // Revert to the original position
     }
     else
     {
