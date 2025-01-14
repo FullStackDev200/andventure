@@ -23,16 +23,16 @@ vector<sf::RectangleShape> sf_paths;
 
 auto get_formula(pair<float, float> &middle1, pair<float, float> &middle2)
 {
-  return [middle1, middle2](int x)
-  { return (middle2.first - middle1.first) / (middle2.second - middle1.second) * (x - middle1.second); };
+  return [middle1, middle2](int x) { return (middle2.first - middle1.first) / (middle2.second - middle1.second) * (x - middle1.second); };
 }
 
-bool isContained(sf::RectangleShape player, vector<sf::RectangleShape> rooms)
+bool isContained(sf::RectangleShape &player, vector<sf::RectangleShape> &rooms)
 {
   // Get the global bounds of both rectangles
   sf::FloatRect innerBounds = player.getGlobalBounds();
 
   bool isWalkable = false;
+
   for (auto room : rooms)
   {
     sf::FloatRect outerBounds = room.getGlobalBounds();
@@ -47,74 +47,49 @@ bool isContained(sf::RectangleShape player, vector<sf::RectangleShape> rooms)
   return isWalkable;
 }
 
-void drawLine(sf::RenderWindow &window, pair<float, float> &middle1, pair<float, float> &middle2, sf::Color lineColor, int &window_height)
+bool isCollidingWithLine(const sf::RectangleShape &player, const sf::RectangleShape &line)
 {
-  sf::RectangleShape rect(sf::Vector2f(1, 1));
-  rect.setFillColor(lineColor);
-  auto formula = get_formula(middle1, middle2);
+  // Get player's bounding box
+  sf::FloatRect playerBounds = player.getGlobalBounds();
 
-  if (middle2.second == middle1.second)
+  // Get the four corners of the line after applying transformations
+  std::vector<sf::Vector2f> linePoints(4);
+  linePoints[0] = line.getTransform().transformPoint(0.f, 0.f);                            // Top-left
+  linePoints[1] = line.getTransform().transformPoint(line.getSize().x, 0.f);               // Top-right
+  linePoints[2] = line.getTransform().transformPoint(line.getSize().x, line.getSize().y);  // Bottom-right
+  linePoints[3] = line.getTransform().transformPoint(0.f, line.getSize().y);               // Bottom-left
+
+  // Check if any of the line's transformed points intersects the player bounds
+  for (const auto &point : linePoints)
   {
-    for (size_t x = min(middle1.first, middle2.first); x <= max(middle1.first, middle2.first); x++)
-    {
-      rect.setPosition(x, window_height - middle1.second);
-      sf_paths.push_back(rect);
-      window.draw(rect);
-      rect.setPosition(x, window_height - middle1.second - 1);
-      sf_paths.push_back(rect);
-      window.draw(rect);
-    }
-    return;
+    if (playerBounds.contains(point))
+      return true;
   }
 
-  for (size_t x = min(middle1.second, middle2.second); x <= max(middle1.second, middle2.second); x++)
-  {
-    int form = formula(x);
+  // You can also check for intersections between the edges of the line and player bounds if needed
+  return false;
+}
 
-    rect.setPosition(middle1.first + form, window_height - x);
-    sf_paths.push_back(rect);
+sf::RectangleShape getThickLine(sf::RenderWindow &window, sf::Vector2f point1, sf::Vector2f point2, sf::Color lineColor, float thickness)
+{
+  // Calculate the direction and length of the line
+  sf::Vector2f direction = point2 - point1;
+  float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
-    window.draw(rect);
-    rect.setPosition(middle1.first + form, window_height - x - 1);
-    sf_paths.push_back(rect);
+  // Normalize the direction vector
+  direction /= length;
 
-    window.draw(rect);
-    rect.setPosition(middle1.first + form - 1, window_height - x);
-    sf_paths.push_back(rect);
+  // Create a rectangle shape to represent the line with the desired thickness
+  sf::RectangleShape line(sf::Vector2f(length, thickness));
+  line.setFillColor(lineColor);
 
-    window.draw(rect);
-    rect.setPosition(middle1.first + form - 1, window_height - x - 1);
-    sf_paths.push_back(rect);
+  // Set the orientation of the rectangle to match the line's direction
+  line.setPosition(point1);
+  float angle = std::atan2(direction.y, direction.x) * 180 / 3.14159f;  // Convert to degrees
+  line.setRotation(angle);
 
-    window.draw(rect);
-
-    if (form - formula(x - 1) > 1 && x != min(middle1.second, middle2.second))
-    {
-      for (size_t i = 2; i <= form - formula(x - 1); i++)
-      {
-        rect.setPosition(middle1.first + form - i, window_height - x);
-        sf_paths.push_back(rect);
-
-        window.draw(rect);
-        rect.setPosition(middle1.first + form - i, window_height - x - 1);
-        sf_paths.push_back(rect);
-
-        window.draw(rect);
-      }
-    }
-    else if (formula(x - 1) - form > 1 && x != max(middle1.second, middle2.second))
-    {
-      for (size_t i = 2; i <= formula(x - 1) - form; i++)
-      {
-        rect.setPosition(middle1.first + form - i, window_height - x);
-        window.draw(rect);
-        sf_paths.push_back(rect);
-        rect.setPosition(middle1.first + form - i, window_height - x - 1);
-        sf_paths.push_back(rect);
-        window.draw(rect);
-      }
-    }
-  }
+  // Draw the line (rectangle)
+  return line;
 }
 
 bool is_on_walkable_area(sf::RectangleShape player, vector<sf::RectangleShape> rooms)
@@ -154,6 +129,43 @@ int main()
 
   sf::VertexArray path_points(sf::Points);
 
+  // Create a RenderTexture to draw rooms and paths once
+  sf::RenderTexture renderTexture;
+  if (!renderTexture.create(window_width, window_height))
+  {
+    cerr << "Failed to create render texture!" << endl;
+    return -1;
+  }
+
+  // Pre-render rooms and paths to the RenderTexture
+  renderTexture.clear(sf::Color::Black);
+
+  // Draw rooms
+  for (int i = 0; i < rooms.size(); i++)
+  {
+    sf::RectangleShape room;
+    room.setSize(sf::Vector2f(rooms[i].first, rooms[i].second));
+    room.setFillColor(sf::Color::Blue);
+    room.setPosition(coords[i].first, window_height - rooms[i].second - coords[i].second);
+
+    renderTexture.draw(room);
+  }
+
+  // Draw paths
+  for (const auto &middle : middles)
+  {
+    sf::Vector2f start(middle.first.first, window_height - middle.first.second);
+    sf::Vector2f end(middle.second.first, window_height - middle.second.second);
+    sf::RectangleShape path = getThickLine(window, start, end, sf::Color::Red, 5);
+
+    renderTexture.draw(path);
+  }
+
+  // Finalize the RenderTexture
+  renderTexture.display();
+
+  // Create a sprite from the RenderTexture
+  sf::Sprite staticBackground(renderTexture.getTexture());
   // Rooms
 
   vector<sf::RectangleShape> sf_rooms;
@@ -172,12 +184,29 @@ int main()
 
   // Player
   sf::RectangleShape player;
-  player.setSize(sf::Vector2f(1, 1));        // Increase the size of the player
-  player.setPosition(0, window_height - 10); // Move the player within the window
+  player.setSize(sf::Vector2f(1, 1));                         // Increase the size of the player
+  player.setPosition(0, window_height - player.getSize().y);  // Move the player within the window
   player.setOutlineColor(sf::Color::Green);
   player.setFillColor(sf::Color::Green);
 
-  float playerSpeed = 1;
+  float playerSpeed = 0.03;
+
+  // Drawing static obects
+  // Draw rectangles
+
+  for (const auto &rectangle : sf_rooms)
+  {
+    window.draw(rectangle);
+  }
+
+  // Draw lines using paths
+  for (const auto middle : middles)
+  {
+    sf::Vector2f start(middle.first.first, window_height - middle.first.second);
+    sf::Vector2f end(middle.second.first, window_height - middle.second.second);
+    window.draw(getThickLine(window, start, end, sf::Color::Red, 5));
+    sf_paths.push_back(getThickLine(window, start, end, sf::Color::Red, 5));
+  }
 
   sf::Clock clock;
   while (window.isOpen())
@@ -198,50 +227,53 @@ int main()
     // Clear the window
     window.clear(sf::Color::Black);
 
-    // Draw rectangles
-    for (const auto &rectangle : sf_rooms)
-    {
-      window.draw(rectangle);
-    }
-    // Draw lines using paths
-    for (const auto middle : middles)
-    {
-      pair<float, float> start(middle.first.first, middle.first.second);
-      pair<float, float> end(middle.second.first, middle.second.second);
-      drawLine(window, start, end, sf::Color::Red, window_height);
-    }
+    window.draw(staticBackground);
 
     // Player movement
 
     sf::Vector2f originalPosition = player.getPosition();
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && player.getPosition().x > 0 && is_on_walkable_area(player, sf_rooms))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && player.getPosition().x > 0)
     {
       player.move(-playerSpeed, 0);
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && player.getPosition().x + player.getSize().x < window_width && is_on_walkable_area(player, sf_rooms))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && player.getPosition().x + player.getSize().x < window_width)
     {
       player.move(playerSpeed, 0);
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.getPosition().y > 0 && is_on_walkable_area(player, sf_rooms))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.getPosition().y > 0)
     {
       player.move(0, -playerSpeed);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && player.getPosition().y + player.getSize().y < window_height && is_on_walkable_area(player, sf_rooms))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && player.getPosition().y + player.getSize().y < window_height)
     {
       player.move(0, playerSpeed);
     }
 
-    if (!isContained(player, sf_rooms))
+    bool isOnLine = false;
+    for (const auto &line : sf_paths)
     {
-      std::cout << "Collision detected! Reverting movement.\n";
-      player.setPosition(originalPosition); // Revert to the original position
+      if (isCollidingWithLine(player, line))
+      {
+        isOnLine = true;
+        break;
+      }
+    }
+
+    if (is_on_walkable_area(player, sf_rooms))
+    {
+      std::cout << "Safe to move.\n";
+    }
+    else if (is_on_walkable_area(player, sf_paths))
+    {
+      std::cout << "Player is on the line.\n";
     }
     else
     {
-      std::cout << "Safe to move.\n";
+      std::cout << "Collision detected! Reverting movement.\n";
+      player.setPosition(originalPosition);  // Revert to the original position
     }
 
     window.draw(player);
