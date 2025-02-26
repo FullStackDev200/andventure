@@ -1,5 +1,7 @@
 
 #include "./src/adventure_graph.hpp"
+#include "./src/rectangular_boundry_collision.hpp"
+#include "./src/sfml_helpers.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Color.hpp>
@@ -10,6 +12,7 @@
 #include <SFML/System.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window.hpp>
+#include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <ostream>
@@ -18,105 +21,13 @@
 
 using namespace std;
 using namespace adventure_graph;
+using namespace sfml_helpers;
 
 vector<sf::RectangleShape> sf_paths;
-
-auto get_formula(pair<float, float> &middle1, pair<float, float> &middle2)
-{
-  return [middle1, middle2](int x) { return (middle2.first - middle1.first) / (middle2.second - middle1.second) * (x - middle1.second); };
-}
-
-bool isContained(sf::RectangleShape &player, vector<sf::RectangleShape> &rooms)
-{
-  // Get the global bounds of both rectangles
-  sf::FloatRect innerBounds = player.getGlobalBounds();
-
-  bool isWalkable = false;
-
-  for (auto room : rooms)
-  {
-    sf::FloatRect outerBounds = room.getGlobalBounds();
-    if (innerBounds.left >= outerBounds.left && innerBounds.top >= outerBounds.top && innerBounds.left + innerBounds.width <= outerBounds.left + outerBounds.width &&
-        innerBounds.top + innerBounds.height <= outerBounds.top + outerBounds.height)
-    {
-      isWalkable = true;
-      break;
-    }
-  }
-
-  return isWalkable;
-}
-
-bool isCollidingWithLine(const sf::RectangleShape &player, const sf::RectangleShape &line)
-{
-  // Get player's bounding box
-  sf::FloatRect playerBounds = player.getGlobalBounds();
-
-  // Get the four corners of the line after applying transformations
-  std::vector<sf::Vector2f> linePoints(4);
-  linePoints[0] = line.getTransform().transformPoint(0.f, 0.f);                            // Top-left
-  linePoints[1] = line.getTransform().transformPoint(line.getSize().x, 0.f);               // Top-right
-  linePoints[2] = line.getTransform().transformPoint(line.getSize().x, line.getSize().y);  // Bottom-right
-  linePoints[3] = line.getTransform().transformPoint(0.f, line.getSize().y);               // Bottom-left
-
-  // Check if any of the line's transformed points intersects the player bounds
-  for (const auto &point : linePoints)
-  {
-    if (playerBounds.contains(point))
-      return true;
-  }
-
-  // You can also check for intersections between the edges of the line and player bounds if needed
-  return false;
-}
-
-sf::RectangleShape getThickLine(sf::RenderWindow &window, sf::Vector2f point1, sf::Vector2f point2, sf::Color lineColor, float thickness)
-{
-  // Calculate the direction and length of the line
-  sf::Vector2f direction = point2 - point1;
-  float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-
-  // Normalize the direction vector
-  direction /= length;
-
-  // Create a rectangle shape to represent the line with the desired thickness
-  sf::RectangleShape line(sf::Vector2f(length, thickness));
-  line.setFillColor(lineColor);
-
-  // Set the orientation of the rectangle to match the line's direction
-  line.setPosition(point1);
-  float angle = std::atan2(direction.y, direction.x) * 180 / 3.14159f;  // Convert to degrees
-  line.setRotation(angle);
-
-  // Draw the line (rectangle)
-  return line;
-}
-
-bool is_on_walkable_area(sf::RectangleShape player, vector<sf::RectangleShape> rooms)
-{
-  sf::FloatRect playerBounds = player.getGlobalBounds();
-
-  bool isWalkable = false;
-  for (const auto &shape : rooms)
-  {
-    if (shape.getGlobalBounds().intersects(playerBounds))
-    {
-      isWalkable = true;
-      break;
-    }
-  }
-  return isWalkable;
-}
-
-bool isColliding(const sf::RectangleShape &rect1, const sf::RectangleShape &rect2)
-{
-  return rect1.getGlobalBounds().intersects(rect2.getGlobalBounds());
-}
 
 int main()
 {
   build_graph();
-
   vector<pair<int, int>> rooms = get_rooms();
   vector<pair<int, int>> coords = get_coordinates();
   vector<pair<pair<int, int>, pair<int, int>>> middles = get_middles();
@@ -252,21 +163,15 @@ int main()
       player.move(0, playerSpeed);
     }
 
-    bool isOnLine = false;
-    for (const auto &line : sf_paths)
-    {
-      if (isCollidingWithLine(player, line))
-      {
-        isOnLine = true;
-        break;
-      }
-    }
-
-    if (is_on_walkable_area(player, sf_rooms))
+    /*if (isOnWalkableArea(player, sf_rooms))*/
+    /*{*/
+    /*  std::cout << "Safe to move.\n";*/
+    /*}*/
+    if (std::any_of(sf_rooms.begin(), sf_rooms.end(), [&player](const sf::RectangleShape &x) { return collision::areColliding(player, x); }))
     {
       std::cout << "Safe to move.\n";
     }
-    else if (is_on_walkable_area(player, sf_paths))
+    else if (std::any_of(sf_paths.begin(), sf_paths.end(), [&player](const sf::RectangleShape &x) { return collision::areColliding(player, x, -1); }))
     {
       std::cout << "Player is on the line.\n";
     }
