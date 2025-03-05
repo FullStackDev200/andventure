@@ -25,6 +25,31 @@ using namespace sfml_helpers;
 
 vector<sf::RectangleShape> sf_paths;
 
+std::vector<std::array<sf::Vector2f, 3>> makeNewPaths(std::vector<sf::RectangleShape> rooms)
+{
+  std::vector<std::array<sf::Vector2f, 3>> newPaths;
+
+  if (rooms.size() < 2)
+  {                   // Add this check
+    return newPaths;  // Return an empty vector if there are fewer than 2 rooms
+  }
+
+  std::vector<sf::Vector2f> roomsCenter(rooms.size());
+  std::transform(rooms.begin(), rooms.end(), roomsCenter.begin(),
+                 [](const sf::RectangleShape &room) { return sf::Vector2f(room.getPosition().x + room.getSize().x / 2, room.getPosition().y + room.getSize().y / 2); });
+
+  for (size_t room = 0; room < rooms.size() - 1; room++)
+  {
+    sf::Vector2f startPoint = roomsCenter[room];
+    sf::Vector2f middlePoint = sf::Vector2f((startPoint.x + roomsCenter[room + 1].x) / 2, (startPoint.y + roomsCenter[room + 1].y) / 2);
+    sf::Vector2f endPoint = roomsCenter[room + 1];
+
+    newPaths.push_back({startPoint, middlePoint, endPoint});
+  }
+
+  return newPaths;
+}
+
 int main()
 {
   build_graph();
@@ -110,13 +135,24 @@ int main()
     window.draw(rectangle);
   }
 
-  // Draw lines using paths
-  for (const auto middle : middles)
+  /*// Draw lines using paths*/
+  /*for (const auto middle : middles)*/
+  /*{*/
+  /*  sf::Vector2f start(middle.first.first, window_height - middle.first.second);*/
+  /*  sf::Vector2f end(middle.second.first, window_height - middle.second.second);*/
+  /*  window.draw(getThickLine(window, start, end, sf::Color::Red, 5));*/
+  /*  sf_paths.push_back(getThickLine(window, start, end, sf::Color::Red, 5));*/
+  /*}*/
+  /**/
+
+  std::vector<std::array<sf::Vector2f, 3>> newPaths = makeNewPaths(sf_rooms);
+  for (const auto &path : newPaths)
   {
-    sf::Vector2f start(middle.first.first, window_height - middle.first.second);
-    sf::Vector2f end(middle.second.first, window_height - middle.second.second);
-    window.draw(getThickLine(window, start, end, sf::Color::Red, 5));
-    sf_paths.push_back(getThickLine(window, start, end, sf::Color::Red, 5));
+    sf::RectangleShape firstPath = getThickLine(window, path[0], path[1], sf::Color::Red, 1);
+    sf::RectangleShape secondPath = getThickLine(window, path[1], path[2], sf::Color::Red, 2);
+
+    window.draw(firstPath);
+    window.draw(secondPath);
   }
 
   sf::Clock clock;
