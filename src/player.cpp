@@ -1,5 +1,6 @@
 #include "player.h"
 #include <SFML/System/Vector2.hpp>
+#include <array>
 
 Player::Player(float X, float Y, float width, float height) : X(X), Y(Y), width(width), height(height)
 {
@@ -16,3 +17,5 @@ sf::Vector2f Player::getPosition()
 {
   return sf::Vector2f(X, Y);
 }
+
+/*std::array<sf::RectangleShape, 4> Player::getSurroundWalls() {}*/
