@@ -2,18 +2,23 @@
 #define PLAYER_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <array>
+#include <vector>
 
-class Player
+class Player : public sf::RectangleShape
 {
  public:
   Player(float X = 0.0f, float Y = 0.0f, float height = 0.0f, float width = 0.0f);
+  void setSpeed(float);
+  float getSpeed();
   sf::Vector2f getCenter();
-  sf::Vector2f getPosition();
+  void move(sf::Vector2f);
+  std::array<sf::Vector2f, 4> getSurroundWalls();
 
  private:
-  sf::RectangleShape rectangle;
-  float X, Y, height, width, center;
+  float X, Y, height, width, center, speed;
 };
 
 #endif  // PLAYER_H

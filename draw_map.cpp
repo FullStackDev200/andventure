@@ -1,6 +1,7 @@
 
 #include "./src/adventure_graph.hpp"
 #include "./src/rectangular_boundry_collision.hpp"
+#include "./src/room.h"
 #include "./src/sfml_helpers.hpp"
 
 #include <SFML/Graphics.hpp>
@@ -25,7 +26,7 @@ using namespace sfml_helpers;
 
 vector<sf::RectangleShape> sf_paths;
 
-std::vector<std::array<sf::Vector2f, 3>> makeNewPaths(std::vector<sf::RectangleShape> rooms)
+std::vector<std::array<sf::Vector2f, 3>> makeNewPaths(std::vector<Room> rooms)
 {
   std::vector<std::array<sf::Vector2f, 3>> newPaths;
 
@@ -50,12 +51,23 @@ std::vector<std::array<sf::Vector2f, 3>> makeNewPaths(std::vector<sf::RectangleS
   return newPaths;
 }
 
+vector<Room> vectorToRoom(const vector<pair<int, int>> &rooms, const vector<pair<int, int>> &coords)
+{
+  vector<Room> myRooms;
+  for (int i = 0; i < rooms.size(); i++)
+  {
+    myRooms.push_back(Room(coords[i].first, coords[i].second, rooms[i].first, rooms[i].second));
+  }
+  return myRooms;
+}
+
 int main()
 {
   build_graph();
-  vector<pair<int, int>> rooms = get_rooms();
+
   vector<pair<int, int>> coords = get_coordinates();
-  vector<pair<pair<int, int>, pair<int, int>>> middles = get_middles();
+  vector<pair<int, int>> vecRooms = get_rooms();
+  vector<Room> rooms = vectorToRoom(get_rooms(), get_coordinates());
 
   int window_width = (get_graph().size() - 1);
   int window_height = (get_graph()[0].size());
@@ -79,30 +91,27 @@ int main()
   // Draw rooms
   for (int i = 0; i < rooms.size(); i++)
   {
-    sf::RectangleShape room;
-    room.setSize(sf::Vector2f(rooms[i].first, rooms[i].second));
-    room.setFillColor(sf::Color::Blue);
-    room.setPosition(coords[i].first, window_height - rooms[i].second - coords[i].second);
-
-    renderTexture.draw(room);
+    renderTexture.draw(rooms[i]);
+    cout << "Windows drawn \n";
   }
 
   // Rooms
-  vector<sf::RectangleShape> sf_rooms;
+  /*vector<sf::RectangleShape> sf_rooms;*/
 
-  for (int i = 0; i < rooms.size(); i++)
-  {
-    sf::RectangleShape room;
+  /*for (int i = 0; i < rooms.size(); i++)*/
+  /*{*/
+  /*  sf::RectangleShape room;*/
+  /**/
+  /*  room.setSize(sf::Vector2f(rooms[i].first, rooms[i].second));*/
+  /*  room.setFillColor(sf::Color::Blue);*/
+  /**/
+  /*  cout << "rooms cords" << "x " << coords[i].first << " y " << rooms[i].second;*/
+  /*  room.setPosition(coords[i].first, window_height - rooms[i].second - coords[i].second);*/
+  /*  sf_rooms.push_back(room);*/
+  /*}*/
+  /**/
 
-    room.setSize(sf::Vector2f(rooms[i].first, rooms[i].second));
-    room.setFillColor(sf::Color::Blue);
-
-    cout << "rooms cords" << "x " << coords[i].first << " y " << rooms[i].second;
-    room.setPosition(coords[i].first, window_height - rooms[i].second - coords[i].second);
-    sf_rooms.push_back(room);
-  }
-
-  std::vector<std::array<sf::Vector2f, 3>> newPaths = makeNewPaths(sf_rooms);
+  std::vector<std::array<sf::Vector2f, 3>> newPaths = makeNewPaths(rooms);
   for (const auto &path : newPaths)
   {
     sf::RectangleShape firstPath = getThickLine(window, path[0], path[1], sf::Color::Red, 1);
@@ -122,20 +131,30 @@ int main()
 
   // Player
   sf::RectangleShape player;
-  player.setSize(sf::Vector2f(1, 1));                         // Increase the size of the player
-  player.setPosition(0, window_height - player.getSize().y);  // Move the player within the window
+  player.setSize(sf::Vector2f(1, 1));         // Increase the size of the player
+  player.setPosition(0, player.getSize().y);  // Move the player within the window
   player.setOutlineColor(sf::Color::Green);
   player.setFillColor(sf::Color::Green);
 
   float playerSpeed = 0.03;
 
   // Drawing static obects
-  // Draw rectangles
-
-  for (const auto &rectangle : sf_rooms)
+  // Draw rooms
+  for (const Room &room : rooms)
   {
-    window.draw(rectangle);
+    renderTexture.draw(room);
+    cout << "Rooms drawn 2 \n";
   }
+
+  // Set Coords System like Maths
+  sf::View mathView(sf::FloatRect(0, 0, window_width, window_height));
+  mathView.setCenter(window_width / 2.0f, window_height / 2.0f);
+  mathView.setViewport(sf::FloatRect(0, 0, 1, 1));
+
+  // Flip Y by scaling -1 and translating
+  mathView.setSize(window_width, -window_height);  // Negative height flips Y
+
+  window.setView(mathView);
 
   sf::Clock clock;
   while (window.isOpen())
@@ -174,33 +193,32 @@ int main()
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.getPosition().y > 0)
     {
-      player.move(0, -playerSpeed);
+      player.move(0, playerSpeed);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && player.getPosition().y + player.getSize().y < window_height)
     {
-      player.move(0, playerSpeed);
+      player.move(0, -playerSpeed);
     }
 
     /*if (isOnWalkableArea(player, sf_rooms))*/
     /*{*/
     /*  std::cout << "Safe to move.\n";*/
     /*}*/
-    if (std::any_of(sf_rooms.begin(), sf_rooms.end(), [&player](const sf::RectangleShape &x) { return collision::areColliding(player, x); }))
-    {
-      std::cout << "Safe to move.\n";
-    }
-    else if (std::any_of(sf_paths.begin(), sf_paths.end(), [&player](const sf::RectangleShape &x) { return collision::areColliding(player, x, -1); }))
-    {
-      std::cout << "Player is on the line.\n";
-    }
-    else
-    {
-      std::cout << "Collision detected! Reverting movement.\n";
-      player.setPosition(originalPosition);  // Revert to the original position
-    }
-
+    /*if (std::any_of(rooms.begin(), rooms.end(), [&player](const Room &x) { return collision::areColliding(player, x); }))*/
+    /*{*/
+    /*  std::cout << "Safe to move.\n";*/
+    /*}*/
+    /*else if (std::any_of(sf_paths.begin(), sf_paths.end(), [&player](const Room &x) { return collision::areColliding(player, x, -1); }))*/
+    /*{*/
+    /*  std::cout << "Player is on the line.\n";*/
+    /*}*/
+    /*else*/
+    /*{*/
+    /*  std::cout << "Collision detected! Reverting movement.\n";*/
+    /*  player.setPosition(originalPosition);  // Revert to the original position*/
+    /*}*/
+    /**/
     window.draw(player);
-
     window.display();
   }
 

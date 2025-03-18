@@ -1,11 +1,12 @@
 #include "player.h"
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/System/Vector2.hpp>
-#include <array>
 
 Player::Player(float X, float Y, float width, float height) : X(X), Y(Y), width(width), height(height)
 {
-  rectangle.setSize(sf::Vector2f(width, height));  // Corrected function name
-  rectangle.setPosition(X, Y);                     // Set initial position
+  setSize(sf::Vector2f(width, height));
+  setPosition(X, Y);
+  setFillColor(sf::Color::Green);
 }
 
 sf::Vector2f Player::getCenter()
@@ -13,9 +14,17 @@ sf::Vector2f Player::getCenter()
   return sf::Vector2f(X + width / 2, Y + height / 2);
 }
 
-sf::Vector2f Player::getPosition()
+void Player::move(sf::Vector2f newPos)
 {
-  return sf::Vector2f(X, Y);
+  setPosition(newPos);
 }
 
-/*std::array<sf::RectangleShape, 4> Player::getSurroundWalls() {}*/
+void Player::setSpeed(float newSpeed)
+{
+  speed = newSpeed;
+}
+
+float Player::getSpeed()
+{
+  return speed;
+}
