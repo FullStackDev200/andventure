@@ -14,8 +14,6 @@ class Player : public sf::RectangleShape
   void setSpeed(float);
   float getSpeed();
   sf::Vector2f getCenter();
-  void move(sf::Vector2f);
-  std::array<sf::Vector2f, 4> getSurroundWalls();
 
  private:
   float X, Y, height, width, center, speed;

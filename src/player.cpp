@@ -14,11 +14,6 @@ sf::Vector2f Player::getCenter()
   return sf::Vector2f(X + width / 2, Y + height / 2);
 }
 
-void Player::move(sf::Vector2f newPos)
-{
-  setPosition(newPos);
-}
-
 void Player::setSpeed(float newSpeed)
 {
   speed = newSpeed;

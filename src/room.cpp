@@ -9,7 +9,7 @@ Room::Room(float X, float Y, float width, float height) : X(X), Y(Y), width(widt
   setFillColor(sf::Color::Green);
 }
 
-std::array<sf::Vector2f, 4> Room::getSurroundWalls(int wallWidth)
+std::array<sf::Vector2f, 4> Room::getEdgePoints(int wallWidth)
 {
   std::array<sf::Vector2f, 4> walls;
   sf::Vector2f wall1 = sf::Vector2f(getPosition().x - wallWidth, getPosition().y - wallWidth);

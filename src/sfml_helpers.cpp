@@ -9,6 +9,7 @@
 #include <SFML/Window.hpp>
 #include <cmath>
 #include <utility>
+#include "room.h"
 
 using namespace std;
 
@@ -53,7 +54,7 @@ namespace sfml_helpers
     return line;
   }
 
-  bool isOnWalkableArea(sf::RectangleShape player, vector<sf::RectangleShape> shapes)
+  bool isOnWalkableArea(sf::RectangleShape player, vector<Room> shapes)
   {
     sf::FloatRect playerBounds = player.getGlobalBounds();
 

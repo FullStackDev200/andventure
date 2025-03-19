@@ -3,6 +3,7 @@
 #include "./src/rectangular_boundry_collision.hpp"
 #include "./src/room.h"
 #include "./src/sfml_helpers.hpp"
+#include "src/player.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Color.hpp>
@@ -95,22 +96,6 @@ int main()
     cout << "Windows drawn \n";
   }
 
-  // Rooms
-  /*vector<sf::RectangleShape> sf_rooms;*/
-
-  /*for (int i = 0; i < rooms.size(); i++)*/
-  /*{*/
-  /*  sf::RectangleShape room;*/
-  /**/
-  /*  room.setSize(sf::Vector2f(rooms[i].first, rooms[i].second));*/
-  /*  room.setFillColor(sf::Color::Blue);*/
-  /**/
-  /*  cout << "rooms cords" << "x " << coords[i].first << " y " << rooms[i].second;*/
-  /*  room.setPosition(coords[i].first, window_height - rooms[i].second - coords[i].second);*/
-  /*  sf_rooms.push_back(room);*/
-  /*}*/
-  /**/
-
   std::vector<std::array<sf::Vector2f, 3>> newPaths = makeNewPaths(rooms);
   for (const auto &path : newPaths)
   {
@@ -130,13 +115,12 @@ int main()
   sf::Sprite staticBackground(renderTexture.getTexture());
 
   // Player
-  sf::RectangleShape player;
+  Player player;
   player.setSize(sf::Vector2f(1, 1));         // Increase the size of the player
   player.setPosition(0, player.getSize().y);  // Move the player within the window
-  player.setOutlineColor(sf::Color::Green);
-  player.setFillColor(sf::Color::Green);
-
-  float playerSpeed = 0.03;
+  player.setOutlineColor(sf::Color::Blue);
+  player.setFillColor(sf::Color::Blue);
+  player.setSpeed(0.03);
 
   // Drawing static obects
   // Draw rooms
@@ -183,41 +167,42 @@ int main()
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && player.getPosition().x > 0)
     {
-      player.move(-playerSpeed, 0);
+      player.move(player.getSpeed(), 0);
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && player.getPosition().x + player.getSize().x < window_width)
     {
-      player.move(playerSpeed, 0);
+      player.move(player.getSpeed(), 0);
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.getPosition().y > 0)
     {
-      player.move(0, playerSpeed);
+      player.move(0, player.getSpeed());
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && player.getPosition().y + player.getSize().y < window_height)
     {
-      player.move(0, -playerSpeed);
+      player.move(0, -player.getSpeed());
     }
 
-    /*if (isOnWalkableArea(player, sf_rooms))*/
-    /*{*/
-    /*  std::cout << "Safe to move.\n";*/
-    /*}*/
-    /*if (std::any_of(rooms.begin(), rooms.end(), [&player](const Room &x) { return collision::areColliding(player, x); }))*/
-    /*{*/
-    /*  std::cout << "Safe to move.\n";*/
-    /*}*/
-    /*else if (std::any_of(sf_paths.begin(), sf_paths.end(), [&player](const Room &x) { return collision::areColliding(player, x, -1); }))*/
-    /*{*/
-    /*  std::cout << "Player is on the line.\n";*/
-    /*}*/
-    /*else*/
-    /*{*/
-    /*  std::cout << "Collision detected! Reverting movement.\n";*/
-    /*  player.setPosition(originalPosition);  // Revert to the original position*/
-    /*}*/
-    /**/
+    if (isOnWalkableArea(player, rooms))
+    {
+      std::cout << "Safe to move.\n";
+    }
+
+    if (std::any_of(rooms.begin(), rooms.end(), [&player](const Room &x) { return collision::areColliding(player, x); }))
+    {
+      std::cout << "Safe to move.\n";
+    }
+    else if (std::any_of(sf_paths.begin(), sf_paths.end(), [&player](const sf::RectangleShape &x) { return collision::areColliding(player, x, -1); }))
+    {
+      std::cout << "Player is on the line.\n";
+    }
+    else
+    {
+      std::cout << "Collision detected! Reverting movement.\n";
+      player.setPosition(originalPosition);  // Revert to the original position
+    }
+
     window.draw(player);
     window.display();
   }
