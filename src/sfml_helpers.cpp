@@ -69,4 +69,12 @@ namespace sfml_helpers
     }
     return isWalkable;
   }
+
+  sf::RectangleShape getRectagleWith2Vectors(const sf::Vector2f &point1, const sf::Vector2f &point2)
+  {
+    sf::RectangleShape newRectangle;
+    newRectangle.setSize(sf::Vector2f(max(abs(point1.x - point2.x), 1.0f), max(abs(point1.y - point2.y), 1.0f)));
+    newRectangle.setPosition(sf::Vector2f(min(point1.x, point2.x), min(point1.y, point2.y)));
+    return newRectangle;
+  }
 }  // namespace sfml_helpers

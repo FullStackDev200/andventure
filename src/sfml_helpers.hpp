@@ -20,4 +20,6 @@ namespace sfml_helpers
 
   bool isOnWalkableArea(sf::RectangleShape player, vector<Room> shapes);
 
+  sf::RectangleShape getRectagleWith2Vectors(const sf::Vector2f &point1, const sf::Vector2f &point2);
+
 }  // namespace sfml_helpers

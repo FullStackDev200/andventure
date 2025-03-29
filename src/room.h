@@ -14,7 +14,7 @@ class Room : public sf::RectangleShape
   sf::Vector2f getCenter() const;
 
   // Function to get the surrounding walls (given a wall width)
-  std::array<sf::Vector2f, 4> getEdgePoints(int wallWidth);
+  std::array<sf::Vector2f, 4> getEdgePoints(int wallWidth) const;
 
  private:
   float X, Y, height, width;

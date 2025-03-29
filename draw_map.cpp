@@ -15,6 +15,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window.hpp>
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <iostream>
 #include <ostream>
@@ -27,7 +28,7 @@ using namespace sfml_helpers;
 
 vector<sf::RectangleShape> sf_paths;
 
-std::vector<std::array<sf::Vector2f, 3>> makeNewPaths(std::vector<Room> rooms)
+std::vector<std::array<sf::Vector2f, 3>> makeNewPaths(std::vector<Room> rooms, int width)
 {
   std::vector<std::array<sf::Vector2f, 3>> newPaths;
 
@@ -89,23 +90,36 @@ int main()
   // Pre-render rooms and paths to the RenderTexture
   renderTexture.clear(sf::Color::Black);
 
-  // Draw rooms
-  for (int i = 0; i < rooms.size(); i++)
-  {
-    renderTexture.draw(rooms[i]);
-    cout << "Windows drawn \n";
-  }
-
-  std::vector<std::array<sf::Vector2f, 3>> newPaths = makeNewPaths(rooms);
+  // Draw Paths
+  std::vector<std::array<sf::Vector2f, 3>> newPaths = makeNewPaths(rooms, 1);
   for (const auto &path : newPaths)
   {
-    sf::RectangleShape firstPath = getThickLine(window, path[0], path[1], sf::Color::Red, 1);
-    sf::RectangleShape secondPath = getThickLine(window, path[1], path[2], sf::Color::Red, 1);
+    sf::RectangleShape firstPath = getThickLine(window, path[0], path[1], sf::Color::Red, 2);
+    sf::RectangleShape secondPath = getThickLine(window, path[1], path[2], sf::Color::Red, 2);
     sf_paths.push_back(firstPath);
     sf_paths.push_back(secondPath);
 
     renderTexture.draw(firstPath);
     renderTexture.draw(secondPath);
+  }
+
+  for (const Room &room : rooms)
+  {
+    renderTexture.draw(room);
+    std::array<sf::Vector2f, 4> edgePoints = room.getEdgePoints(1);
+
+    for (int i = 0; i < edgePoints.size(); i++)
+    {
+      sf::RectangleShape wall;
+      if (i == edgePoints.size() - 1)  // Last wall, explicitly connect last to first
+        wall = getRectagleWith2Vectors(edgePoints[i], edgePoints[0]);
+      else
+        wall = getRectagleWith2Vectors(edgePoints[i], edgePoints[i + 1]);
+
+      wall.setFillColor(sf::Color::Magenta);
+      renderTexture.draw(wall);
+      cout << "Wall " << i << " drawn\n";
+    }
   }
 
   // Finalize the RenderTexture
@@ -121,14 +135,6 @@ int main()
   player.setOutlineColor(sf::Color::Blue);
   player.setFillColor(sf::Color::Blue);
   player.setSpeed(0.03);
-
-  // Drawing static obects
-  // Draw rooms
-  for (const Room &room : rooms)
-  {
-    renderTexture.draw(room);
-    cout << "Rooms drawn 2 \n";
-  }
 
   // Set Coords System like Maths
   sf::View mathView(sf::FloatRect(0, 0, window_width, window_height));
@@ -167,7 +173,7 @@ int main()
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && player.getPosition().x > 0)
     {
-      player.move(player.getSpeed(), 0);
+      player.move(-player.getSpeed(), 0);
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && player.getPosition().x + player.getSize().x < window_width)
