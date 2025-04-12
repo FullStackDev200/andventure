@@ -16,11 +16,6 @@ using namespace std;
 namespace sfml_helpers
 {
 
-  auto get_formula(pair<float, float> &middle1, pair<float, float> &middle2)
-  {
-    return [middle1, middle2](int x) { return (middle2.first - middle1.first) / (middle2.second - middle1.second) * (x - middle1.second); };
-  }
-
   bool isContained(const sf::RectangleShape &player, const sf::RectangleShape &room)
   {
     // Get the global bounds of both rectangles

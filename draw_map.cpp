@@ -28,24 +28,25 @@ using namespace sfml_helpers;
 
 vector<sf::RectangleShape> sf_paths;
 
-std::vector<std::array<sf::Vector2f, 3>> makeNewPaths(std::vector<Room> rooms, int width)
+std::vector<std::array<sf::Vector2f, 3>> makeNewPaths(std::vector<Room> rooms)
 {
   std::vector<std::array<sf::Vector2f, 3>> newPaths;
-
-  if (rooms.size() < 2)
-  {                   // Add this check
-    return newPaths;  // Return an empty vector if there are fewer than 2 rooms
-  }
-
   std::vector<sf::Vector2f> roomsCenter(rooms.size());
-  std::transform(rooms.begin(), rooms.end(), roomsCenter.begin(),
-                 [](const sf::RectangleShape &room) { return sf::Vector2f(room.getPosition().x + room.getSize().x / 2, room.getPosition().y + room.getSize().y / 2); });
+  vector<std::pair<int, int>> paths = get_paths();
 
-  for (size_t room = 0; room < rooms.size() - 1; room++)
+  // if (rooms.size() < 2)
+  // {                   // Add this check
+  //   return newPaths;  // Return an empty vector if there are fewer than 2 rooms
+  // }
+
+  std::transform(rooms.begin(), rooms.end(), roomsCenter.begin(), [](const sf::RectangleShape &room)
+                 { return sf::Vector2f(room.getPosition().x + room.getSize().x / 2, room.getPosition().y + room.getSize().y / 2); });
+
+  for (size_t i = 0; i < paths.size(); i++)
   {
-    sf::Vector2f startPoint = roomsCenter[room];
-    sf::Vector2f middlePoint = sf::Vector2f(roomsCenter[room].x, roomsCenter[room + 1].y);
-    sf::Vector2f endPoint = roomsCenter[room + 1];
+    sf::Vector2f startPoint = roomsCenter[paths[i].first];
+    sf::Vector2f middlePoint = sf::Vector2f(roomsCenter[paths[i].first].x, roomsCenter[paths[i].second].y);
+    sf::Vector2f endPoint = roomsCenter[paths[i].second];
 
     newPaths.push_back({startPoint, middlePoint, endPoint});
   }
@@ -91,11 +92,11 @@ int main()
   renderTexture.clear(sf::Color::Black);
 
   // Draw Paths
-  std::vector<std::array<sf::Vector2f, 3>> newPaths = makeNewPaths(rooms, 1);
+  std::vector<std::array<sf::Vector2f, 3>> newPaths = makeNewPaths(rooms);
   for (const auto &path : newPaths)
   {
-    sf::RectangleShape firstPath = getThickLine(window, path[0], path[1], sf::Color::Red, 2);
-    sf::RectangleShape secondPath = getThickLine(window, path[1], path[2], sf::Color::Red, 2);
+    sf::RectangleShape firstPath = getThickLine(window, path[0], path[1], sf::Color::Red, 1);
+    sf::RectangleShape secondPath = getThickLine(window, path[2], path[1], sf::Color::Red, 1);
     sf_paths.push_back(firstPath);
     sf_paths.push_back(secondPath);
 
@@ -111,7 +112,7 @@ int main()
     for (int i = 0; i < edgePoints.size(); i++)
     {
       sf::RectangleShape wall;
-      if (i == edgePoints.size() - 1)  // Last wall, explicitly connect last to first
+      if (i == edgePoints.size() - 1) // Last wall, explicitly connect last to first
         wall = getRectagleWith2Vectors(edgePoints[i], edgePoints[0]);
       else
         wall = getRectagleWith2Vectors(edgePoints[i], edgePoints[i + 1]);
@@ -130,11 +131,11 @@ int main()
 
   // Player
   Player player;
-  player.setSize(sf::Vector2f(1, 1));         // Increase the size of the player
-  player.setPosition(0, player.getSize().y);  // Move the player within the window
+  player.setSize(sf::Vector2f(1, 1));        // Increase the size of the player
+  player.setPosition(0, player.getSize().y); // Move the player within the window
   player.setOutlineColor(sf::Color::Blue);
   player.setFillColor(sf::Color::Blue);
-  player.setSpeed(0.03);
+  player.setSpeed(0.01);
 
   // Set Coords System like Maths
   sf::View mathView(sf::FloatRect(0, 0, window_width, window_height));
@@ -142,7 +143,7 @@ int main()
   mathView.setViewport(sf::FloatRect(0, 0, 1, 1));
 
   // Flip Y by scaling -1 and translating
-  mathView.setSize(window_width, -window_height);  // Negative height flips Y
+  mathView.setSize(window_width, -window_height); // Negative height flips Y
 
   window.setView(mathView);
 
@@ -192,21 +193,23 @@ int main()
 
     if (isOnWalkableArea(player, rooms))
     {
-      std::cout << "Safe to move.\n";
+      // std::cout << "Safe to move.\n";
     }
 
-    if (std::any_of(rooms.begin(), rooms.end(), [&player](const Room &x) { return collision::areColliding(player, x); }))
+    if (std::any_of(rooms.begin(), rooms.end(), [&player](const Room &x)
+                    { return collision::areColliding(player, x); }))
     {
-      std::cout << "Safe to move.\n";
+      // std::cout << "Safe to move.\n";
     }
-    else if (std::any_of(sf_paths.begin(), sf_paths.end(), [&player](const sf::RectangleShape &x) { return collision::areColliding(player, x, -1); }))
+    else if (std::any_of(sf_paths.begin(), sf_paths.end(), [&player](const sf::RectangleShape &x)
+                         { return collision::areColliding(player, x, -1); }))
     {
-      std::cout << "Player is on the line.\n";
+      // std::cout << "Player is on the line.\n";
     }
     else
     {
-      std::cout << "Collision detected! Reverting movement.\n";
-      player.setPosition(originalPosition);  // Revert to the original position
+      // std::cout << "Collision detected! Reverting movement.\n";
+      player.setPosition(originalPosition); // Revert to the original position
     }
 
     window.draw(player);
