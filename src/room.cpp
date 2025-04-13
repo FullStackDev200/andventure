@@ -18,10 +18,10 @@ std::array<sf::Vector2f, 4> Room::getEdgePoints(int wallWidth) const
   sf::Vector2f pos = getPosition();
   sf::Vector2f size = getSize();
 
-  sf::Vector2f bottomLeft = {pos.x, pos.y};
-  sf::Vector2f topLeft = {pos.x, pos.y + size.y};
-  sf::Vector2f topRight = {pos.x + size.x + wallWidth, pos.y + size.y};
-  sf::Vector2f bottomRight = {pos.x + size.x, pos.y};
+  sf::Vector2f bottomLeft = {pos.x - wallWidth, pos.y - wallWidth};
+  sf::Vector2f topLeft = {pos.x - wallWidth, pos.y + size.y};
+  sf::Vector2f topRight = {pos.x + size.x + wallWidth, pos.y + size.y + wallWidth};
+  sf::Vector2f bottomRight = {pos.x + size.x, pos.y - wallWidth};
 
   walls[0] = topLeft;
   walls[1] = topRight;
