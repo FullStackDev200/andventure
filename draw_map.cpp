@@ -112,7 +112,7 @@ int main()
   for (const Room &room : rooms)
   {
     renderTexture.draw(room);
-    std::array<sf::Vector2f, 4> edgePoints = room.getEdgePoints(1);
+    std::array<sf::Vector2f, 4> edgePoints = room.getEdgePoints(scale);
 
     for (int i = 0; i < edgePoints.size(); i++)
     {
@@ -138,7 +138,7 @@ int main()
   // Player
   Player player;
   player.setSize(sf::Vector2f(1 * scale, 1 * scale));  // Increase the size of the player
-  player.setPosition(0, player.getSize().y);           // Move the player within the window
+  player.setPosition(scale, player.getSize().y);       // Move the player within the window
   player.setOutlineColor(sf::Color::Blue);
   player.setFillColor(sf::Color::Blue);
   player.setSpeed(0.01 * scale);
@@ -180,14 +180,12 @@ int main()
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && player.getPosition().x > 0)
     {
-      player.move(-player.getSpeed() * dt, 0);
+      player.move(-player.getSpeed(), 0);
     }
-
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && player.getPosition().x + player.getSize().x < window_width)
     {
       player.move(player.getSpeed(), 0);
     }
-
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.getPosition().y > 0)
     {
       player.move(0, player.getSpeed());
@@ -197,31 +195,14 @@ int main()
       player.move(0, -player.getSpeed());
     }
 
-    if (isOnWalkableArea(player, rooms))
+    if (std::any_of(walls.begin(), walls.end(), [&player](const sf::RectangleShape &x) { return collision::areColliding(player, x, -1); }))
     {
-      // std::cout << "Safe to move.\n";
-    }
-
-    if (std::any_of(rooms.begin(), rooms.end(), [&player](const Room &x) { return collision::areColliding(player, x); }))
-    {
-      // std::cout << "Safe to move.\n";
-    }
-    else if (std::any_of(walls.begin(), walls.end(), [&player](const sf::RectangleShape &x) { return collision::areColliding(player, x, -1); }))
-    {
-      cout << "Colliding with wall \n";
-
-      cout << "player position:" << " x:" << player.getPosition().x << " y:" << player.getPosition().y << "\n";
       player.setPosition(originalPosition);
-      cout << "player position:" << " x:" << player.getPosition().x << " y:" << player.getPosition().y << "\n";
     }
-    else if (std::any_of(sf_paths.begin(), sf_paths.end(), [&player](const sf::RectangleShape &x) { return collision::areColliding(player, x, -1); }))
+
+    if (std::any_of(sf_paths.begin(), sf_paths.end(), [&player](const sf::RectangleShape &x) { return collision::areColliding(player, x, -1); }))
     {
       // std::cout << "Player is on the line.\n";
-    }
-    else
-    {
-      // std::cout << "Collision detected! Reverting movement.\n";
-      player.setPosition(originalPosition);  // Revert to the original position
     }
 
     window.draw(player);
