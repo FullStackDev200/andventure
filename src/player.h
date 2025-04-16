@@ -11,6 +11,7 @@ class Player : public sf::RectangleShape
 {
  public:
   Player(float X = 0.0f, float Y = 0.0f, float height = 0.0f, float width = 0.0f);
+
   void setSpeed(float);
   float getSpeed();
   sf::Vector2f getCenter();

@@ -16,7 +16,7 @@ namespace sfml_helpers
 
   bool isContained(const sf::RectangleShape &player, const sf::RectangleShape &room);
 
-  sf::RectangleShape getThickLine(sf::RenderWindow &window, sf::Vector2f point1, sf::Vector2f point2, sf::Color lineColor, float thickness);
+  sf::RectangleShape getThickLine(sf::Vector2f point1, sf::Vector2f point2, sf::Color lineColor, float thickness);
 
   bool isOnWalkableArea(sf::RectangleShape player, vector<Room> shapes);
 

@@ -1,8 +1,9 @@
-
 #include "./src/adventure_graph.hpp"
+
 #include "./src/rectangular_boundry_collision.hpp"
 #include "./src/room.h"
 #include "./src/sfml_helpers.hpp"
+#include "src/path.h"
 #include "src/player.h"
 
 #include <SFML/Graphics.hpp>
@@ -64,6 +65,13 @@ vector<Room> vectorToRoom(const vector<pair<int, int>> &rooms, const vector<pair
   return myRooms;
 }
 
+sf::FloatRect getDoorChords(const Room &room, const sf::RectangleShape &path)
+{
+  sf::FloatRect intersection;
+  bool doorChords = room.getGlobalBounds().intersects(path.getGlobalBounds(), intersection);
+  return intersection;
+}
+
 int main()
 {
   build_graph();
@@ -81,8 +89,6 @@ int main()
   // Create SFML window
   sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML Window");
 
-  sf::VertexArray path_points(sf::Points);
-
   // Create a RenderTexture to draw rooms and paths once
   sf::RenderTexture renderTexture;
   if (!renderTexture.create(window_width, window_height))
@@ -95,11 +101,19 @@ int main()
   renderTexture.clear(sf::Color::Black);
 
   // Draw Paths
-  std::vector<std::array<sf::Vector2f, 3>> newPaths = makeNewPaths(rooms);
-  for (const auto &path : newPaths)
+  std::vector<std::array<sf::Vector2f, 3>> pathsCoords = makeNewPaths(rooms);
+  vector<Path> paths;
+
+  for (const auto &pathCoord : pathsCoords)
   {
-    sf::RectangleShape firstPath = getThickLine(window, path[0], path[1], sf::Color::Red, 1 * scale);
-    sf::RectangleShape secondPath = getThickLine(window, path[2], path[1], sf::Color::Red, 1 * scale);
+    sf::RectangleShape firstPath = getThickLine(pathCoord[0], pathCoord[1], sf::Color::Red, 1 * scale);
+    sf::RectangleShape secondPath = getThickLine(pathCoord[2], pathCoord[1], sf::Color::Red, 1 * scale);
+
+    Path path(pathCoord[0], pathCoord[1], pathCoord[2], scale);
+    paths.push_back(path);
+
+    /*renderTexture.draw(path);*/
+
     sf_paths.push_back(firstPath);
     sf_paths.push_back(secondPath);
 
@@ -178,31 +192,18 @@ int main()
 
     sf::Vector2f originalPosition = player.getPosition();
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && player.getPosition().x > 0)
-    {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
       player.move(-player.getSpeed(), 0);
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && player.getPosition().x + player.getSize().x < window_width)
-    {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
       player.move(player.getSpeed(), 0);
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.getPosition().y > 0)
-    {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
       player.move(0, player.getSpeed());
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && player.getPosition().y + player.getSize().y < window_height)
-    {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
       player.move(0, -player.getSpeed());
-    }
 
-    if (std::any_of(walls.begin(), walls.end(), [&player](const sf::RectangleShape &x) { return collision::areColliding(player, x, -1); }))
+    if (std::any_of(walls.begin(), walls.end(), [&player](const sf::RectangleShape &wall) { return collision::areColliding(player, wall, -1); }))
     {
       player.setPosition(originalPosition);
-    }
-
-    if (std::any_of(sf_paths.begin(), sf_paths.end(), [&player](const sf::RectangleShape &x) { return collision::areColliding(player, x, -1); }))
-    {
-      // std::cout << "Player is on the line.\n";
     }
 
     window.draw(player);

@@ -26,7 +26,7 @@ namespace sfml_helpers
            playerBounds.top + playerBounds.height <= roomBounds.top + roomBounds.height;
   }
 
-  sf::RectangleShape getThickLine(sf::RenderWindow &window, sf::Vector2f point1, sf::Vector2f point2, sf::Color lineColor, float thickness)
+  sf::RectangleShape getThickLine(sf::Vector2f point1, sf::Vector2f point2, sf::Color lineColor, float thickness)
   {
     // Calculate the direction and length of the line
     sf::Vector2f direction = point2 - point1;
