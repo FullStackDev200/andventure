@@ -1,0 +1,21 @@
+# ninja log v6
+5	126	7674804042011562	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-mkdir	c0dd9cae4dcaae51
+5	126	7674804042011562	C:/Users/round/source/repos/cmake-sfml-project/out/build/x64-Debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-mkdir	c0dd9cae4dcaae51
+126	8776	7674804128445442	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-download	519baf9f2822365
+126	8776	7674804128445442	C:/Users/round/source/repos/cmake-sfml-project/out/build/x64-Debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-download	519baf9f2822365
+8777	8978	7674804128602868	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-update	e3c405ee0879b1a
+8777	8978	7674804128602868	C:/Users/round/source/repos/cmake-sfml-project/out/build/x64-Debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-update	e3c405ee0879b1a
+8979	9100	7674804131705004	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-patch	5f78d3d1f7cf837f
+8979	9100	7674804131705004	C:/Users/round/source/repos/cmake-sfml-project/out/build/x64-Debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-patch	5f78d3d1f7cf837f
+9100	9220	7674804132820658	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-configure	faa80d901be84bd5
+9100	9220	7674804132820658	C:/Users/round/source/repos/cmake-sfml-project/out/build/x64-Debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-configure	faa80d901be84bd5
+9220	9339	7674804134095320	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-build	138dbcc928bd04e5
+9220	9339	7674804134095320	C:/Users/round/source/repos/cmake-sfml-project/out/build/x64-Debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-build	138dbcc928bd04e5
+9339	9460	7674804135363508	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-install	3ac328a1d9372b1f
+9339	9460	7674804135363508	C:/Users/round/source/repos/cmake-sfml-project/out/build/x64-Debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-install	3ac328a1d9372b1f
+9460	9582	7674804136471189	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-test	7d798d2daea209a6
+9460	9582	7674804136471189	C:/Users/round/source/repos/cmake-sfml-project/out/build/x64-Debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-test	7d798d2daea209a6
+9582	9758	7674804138333620	CMakeFiles/vorbis-populate-complete	70342f1c22a6ebf
+9582	9758	7674804138333620	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-done	70342f1c22a6ebf
+9582	9758	7674804138333620	C:/Users/round/source/repos/cmake-sfml-project/out/build/x64-Debug/_deps/vorbis-subbuild/CMakeFiles/vorbis-populate-complete	70342f1c22a6ebf
+9582	9758	7674804138333620	C:/Users/round/source/repos/cmake-sfml-project/out/build/x64-Debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-done	70342f1c22a6ebf

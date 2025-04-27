@@ -1,6 +1,47 @@
-build
-out
-.cache
-.idea
-.vs
-.vscode
+## Ignore build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+## Ignore user-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.csproj.user
+*.pidb
+
+## Ignore MonoDevelop files
+*.userprefs
+
+## Ignore Visual Studio cache, temp, and settings
+.vs/
+.vscode/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Others
+*.dbmdl
+*.bak
+*.backup
+*.log
+*.ncb
+*.sdf
+*.sqlite
+*.swp
+
+# DotCover
+.idea/
+*.dotCover
+
+# Rider
+.idea/
+
+# Resharper
+*.DotSettings.user
+_ReSharper_

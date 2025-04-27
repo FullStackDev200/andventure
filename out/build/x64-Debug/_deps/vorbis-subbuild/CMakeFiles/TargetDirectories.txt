@@ -1,0 +1,3 @@
+C:/Users/round/source/repos/cmake-sfml-project/out/build/x64-Debug/_deps/vorbis-subbuild/CMakeFiles/vorbis-populate.dir
+C:/Users/round/source/repos/cmake-sfml-project/out/build/x64-Debug/_deps/vorbis-subbuild/CMakeFiles/edit_cache.dir
+C:/Users/round/source/repos/cmake-sfml-project/out/build/x64-Debug/_deps/vorbis-subbuild/CMakeFiles/rebuild_cache.dir
