@@ -1,5 +1,6 @@
 ## Ignore build results
 [Bb]in/
+[Oo]ut/
 [Oo]bj/
 [Ll]og/
 
