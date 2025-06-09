@@ -34,8 +34,6 @@ int main()
   vector<pair<int, int>> coords = get_coordinates();
   vector<pair<int, int>> vecRooms = get_rooms();
 
-  vector<sf::RectangleShape> sf_paths;
-
   int scale = 10;
 
   vector<Room> rooms = vectorToRoom(get_rooms(), get_coordinates(), scale);
@@ -63,19 +61,17 @@ int main()
 
   for (const auto& pathCoord : pathsCoords)
   {
-    sf::RectangleShape firstPath = getThickLine(pathCoord[0], pathCoord[1], sf::Color::Red, 1 * scale);
-    sf::RectangleShape secondPath = getThickLine(pathCoord[2], pathCoord[1], sf::Color::Red, 1 * scale);
-
-    Path path(pathCoord[0], pathCoord[1], pathCoord[2], scale);
+    Path path(pathCoord[2], pathCoord[1], pathCoord[0], scale, 1);
+    path.setwallWidth(1);
     paths.push_back(path);
 
-    /*renderTexture.draw(path);*/
+    const auto& walls = path.getWalls();
 
-    sf_paths.push_back(firstPath);
-    sf_paths.push_back(secondPath);
-
-    renderTexture.draw(firstPath);
-    renderTexture.draw(secondPath);
+    for (const auto& wall : walls)
+    {
+      renderTexture.draw(wall);
+    }
+    // renderTexture.draw(path);
   }
 
   std::vector<sf::RectangleShape> walls;
