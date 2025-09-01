@@ -31,7 +31,7 @@ const sf::Vector2f Path::getPoint3()
   return point3;
 }
 
-std::vector<sf::RectangleShape> Path::getWalls()
+std::vector<sf::RectangleShape> Path::getWalls() const
 {
   float offset_distance = (width / 2.0f) + wallWidth;
 
@@ -95,4 +95,14 @@ void Path::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
   target.draw(line1, states);
   target.draw(line2, states);
+}
+
+const sf::RectangleShape& Path::getLine1() const
+{
+  return line1;
+}
+
+const sf::RectangleShape& Path::getLine2() const
+{
+  return line2;
 }

@@ -23,7 +23,7 @@ file(GLOB_RECURSE SRC_SOURCES CONFIGURE_DEPENDS src/*.cpp)
 
 add_executable(main main.cpp ${SRC_SOURCES})
 
-target_compile_features(main PRIVATE cxx_std_17)
+target_compile_features(main PRIVATE cxx_std_20)
 
 # Now use official exported SFML targets (they exist now!)
 target_link_libraries(main PRIVATE sfml-graphics sfml-window sfml-system)

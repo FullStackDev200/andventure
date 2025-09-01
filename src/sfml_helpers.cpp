@@ -7,7 +7,9 @@
 #include <SFML/System.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window.hpp>
+#include <algorithm>
 #include <cmath>
+#include <span>
 #include "room.h"
 
 #include "adventure_graph.hpp"
@@ -132,5 +134,45 @@ namespace sfml_helpers
   float dot(sf::Vector2f a, sf::Vector2f b)
   {
     return a.x * b.x + a.y * b.y;
+  }
+
+  enum class ExtremumType
+  {
+    LeftmostUppermost,
+    LeftmostDownmost,
+    RightmostUppermost,
+    RightmostDownmost,
+    UpmostLeftmost,
+    UpmostRightmost,
+    DownmostLeftmost,
+    DownmostRightmost
+  };
+
+  sf::Vector2f findExtremum(const std::vector<sf::Vector2f>& points, ExtremumType type)
+  {
+    return *std::min_element(points.begin(), points.end(),
+                             [type](const sf::Vector2f& a, const sf::Vector2f& b)
+                             {
+                               switch (type)
+                               {
+                                 case ExtremumType::LeftmostUppermost:
+                                   return (a.x != b.x) ? a.x < b.x : a.y > b.y;
+                                 case ExtremumType::LeftmostDownmost:
+                                   return (a.x != b.x) ? a.x < b.x : a.y < b.y;
+                                 case ExtremumType::RightmostUppermost:
+                                   return (a.x != b.x) ? a.x > b.x : a.y > b.y;
+                                 case ExtremumType::RightmostDownmost:
+                                   return (a.x != b.x) ? a.x > b.x : a.y < b.y;
+                                 case ExtremumType::UpmostLeftmost:
+                                   return (a.y != b.y) ? a.y > b.y : a.x < b.x;
+                                 case ExtremumType::UpmostRightmost:
+                                   return (a.y != b.y) ? a.y > b.y : a.x > b.x;
+                                 case ExtremumType::DownmostLeftmost:
+                                   return (a.y != b.y) ? a.y < b.y : a.x < b.x;
+                                 case ExtremumType::DownmostRightmost:
+                                   return (a.y != b.y) ? a.y < b.y : a.x > b.x;
+                               }
+                               return false;  // default, should never hit
+                             });
   }
 }  // namespace sfml_helpers

@@ -1,43 +1,49 @@
 [
 {
   "directory": "C:/Users/round/source/repos/andventure/build",
-  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include -o CMakeFiles\\main.dir\\main.cpp.obj -c C:\\Users\\round\\source\\repos\\andventure\\main.cpp",
+  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include -std=gnu++20 -o CMakeFiles\\main.dir\\main.cpp.obj -c C:\\Users\\round\\source\\repos\\andventure\\main.cpp",
   "file": "C:\\Users\\round\\source\\repos\\andventure\\main.cpp",
   "output": "CMakeFiles\\main.dir\\main.cpp.obj"
 },
 {
   "directory": "C:/Users/round/source/repos/andventure/build",
-  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include -o CMakeFiles\\main.dir\\src\\adventure_graph.cpp.obj -c C:\\Users\\round\\source\\repos\\andventure\\src\\adventure_graph.cpp",
+  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include -std=gnu++20 -o CMakeFiles\\main.dir\\src\\adventure_graph.cpp.obj -c C:\\Users\\round\\source\\repos\\andventure\\src\\adventure_graph.cpp",
   "file": "C:\\Users\\round\\source\\repos\\andventure\\src\\adventure_graph.cpp",
   "output": "CMakeFiles\\main.dir\\src\\adventure_graph.cpp.obj"
 },
 {
   "directory": "C:/Users/round/source/repos/andventure/build",
-  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include -o CMakeFiles\\main.dir\\src\\path.cpp.obj -c C:\\Users\\round\\source\\repos\\andventure\\src\\path.cpp",
+  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include -std=gnu++20 -o CMakeFiles\\main.dir\\src\\game.cpp.obj -c C:\\Users\\round\\source\\repos\\andventure\\src\\game.cpp",
+  "file": "C:\\Users\\round\\source\\repos\\andventure\\src\\game.cpp",
+  "output": "CMakeFiles\\main.dir\\src\\game.cpp.obj"
+},
+{
+  "directory": "C:/Users/round/source/repos/andventure/build",
+  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include -std=gnu++20 -o CMakeFiles\\main.dir\\src\\path.cpp.obj -c C:\\Users\\round\\source\\repos\\andventure\\src\\path.cpp",
   "file": "C:\\Users\\round\\source\\repos\\andventure\\src\\path.cpp",
   "output": "CMakeFiles\\main.dir\\src\\path.cpp.obj"
 },
 {
   "directory": "C:/Users/round/source/repos/andventure/build",
-  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include -o CMakeFiles\\main.dir\\src\\player.cpp.obj -c C:\\Users\\round\\source\\repos\\andventure\\src\\player.cpp",
+  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include -std=gnu++20 -o CMakeFiles\\main.dir\\src\\player.cpp.obj -c C:\\Users\\round\\source\\repos\\andventure\\src\\player.cpp",
   "file": "C:\\Users\\round\\source\\repos\\andventure\\src\\player.cpp",
   "output": "CMakeFiles\\main.dir\\src\\player.cpp.obj"
 },
 {
   "directory": "C:/Users/round/source/repos/andventure/build",
-  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include -o CMakeFiles\\main.dir\\src\\room.cpp.obj -c C:\\Users\\round\\source\\repos\\andventure\\src\\room.cpp",
+  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include -std=gnu++20 -o CMakeFiles\\main.dir\\src\\room.cpp.obj -c C:\\Users\\round\\source\\repos\\andventure\\src\\room.cpp",
   "file": "C:\\Users\\round\\source\\repos\\andventure\\src\\room.cpp",
   "output": "CMakeFiles\\main.dir\\src\\room.cpp.obj"
 },
 {
   "directory": "C:/Users/round/source/repos/andventure/build",
-  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include -o CMakeFiles\\main.dir\\src\\sfml_helpers.cpp.obj -c C:\\Users\\round\\source\\repos\\andventure\\src\\sfml_helpers.cpp",
+  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include -std=gnu++20 -o CMakeFiles\\main.dir\\src\\sfml_helpers.cpp.obj -c C:\\Users\\round\\source\\repos\\andventure\\src\\sfml_helpers.cpp",
   "file": "C:\\Users\\round\\source\\repos\\andventure\\src\\sfml_helpers.cpp",
   "output": "CMakeFiles\\main.dir\\src\\sfml_helpers.cpp.obj"
 },
 {
   "directory": "C:/Users/round/source/repos/andventure/build",
-  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include -o CMakeFiles\\main.dir\\src\\wall.cpp.obj -c C:\\Users\\round\\source\\repos\\andventure\\src\\wall.cpp",
+  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include -std=gnu++20 -o CMakeFiles\\main.dir\\src\\wall.cpp.obj -c C:\\Users\\round\\source\\repos\\andventure\\src\\wall.cpp",
   "file": "C:\\Users\\round\\source\\repos\\andventure\\src\\wall.cpp",
   "output": "CMakeFiles\\main.dir\\src\\wall.cpp.obj"
 },
