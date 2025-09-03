@@ -76,7 +76,7 @@ namespace collision
   namespace impl
   {
 
-    bool satRectangleAndPoints(const sf::Vector2f rectangleSize, const std::array<sf::Vector2f, 4>& points)
+    inline bool satRectangleAndPoints(const sf::Vector2f rectangleSize, const std::array<sf::Vector2f, 4>& points)
     {
       bool allPointsLeftOfRectangle{true};
       bool allPointsRightOfRectangle{true};

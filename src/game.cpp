@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include <cstddef>
 #include <iostream>
 #include "SFML/Graphics/Color.hpp"
 #include "SFML/Graphics/RectangleShape.hpp"
@@ -9,17 +10,14 @@
 #include "adventure_graph.hpp"
 #include "path.h"
 #include "player.h"
+#include "rectangular_boundry_collision.hpp"
 #include "room.h"
 #include "sfml_helpers.hpp"
 
 Game::Game()
 {
   adventure_graph::build_graph();
-  vector<pair<int, int>> coords = adventure_graph::get_coordinates();
-  vector<pair<int, int>> vecRooms = adventure_graph::get_rooms();
   int scale = 10;
-
-  vector<Room> rooms = sfml_helpers::vectorToRoom(adventure_graph::get_rooms(), adventure_graph::get_coordinates(), scale);
 
   int window_width = (adventure_graph::get_graph().size() - 1) * scale;
   int window_height = (adventure_graph::get_graph()[0].size() * scale);
@@ -31,21 +29,19 @@ Game::Game()
   mathView.setCenter(window_width / 2.0f, window_height / 2.0f);
   mathView.setViewport(sf::FloatRect(0, 0, 1, 1));
 
-  // Flip Y by scaling -1 and translating
-  mathView.setSize(window_width, -window_height);  // Negative height flips Y
+  mathView.setSize(window_width, -window_height);
 
   window.setView(mathView);
 
-  // Create a RenderTexture to draw rooms and paths once
   if (!renderTexture.create(window_width, window_height))
   {
     std::cerr << "Failed to create render texture!" << std::endl;
   }
+
   player.setSize(sf::Vector2(10.0f, 10.0f));
   player.setFillColor(sf::Color::Red);
-  player.setSpeed(1.0);
+  player.setSpeed(0.1);
 
-  // Pre-render rooms and paths to the RenderTexture
   renderTexture.clear(sf::Color::Black);
 }
 
@@ -75,44 +71,27 @@ int Game::run()
   return 0;
 }
 
-void Game::makePaths()
+void Game::generatePaths()
 {
-  std::vector<std::array<sf::Vector2f, 3>> pathsCoords = sfml_helpers::makeNewPaths(rooms);
+  auto pathsCoords = sfml_helpers::makeNewPaths(rooms);
 
   for (const auto& pathCoord : pathsCoords)
   {
     Path path(pathCoord[2], pathCoord[1], pathCoord[0], scale, 1);
-    path.setwallWidth(1);
-    paths.emplace_back(path);
-  }
-}
 
-void Game::makePathWalls()
-{
-  for (const auto& path : paths)
-  {
-    const auto& walls = path.getWalls();
+    renderTexture.draw(path);
 
-    sf::FloatRect interseciton1;
-    sf::FloatRect interseciton2;
-    path.getLine1().getGlobalBounds().intersects(path.getLine1().getGlobalBounds(), interseciton1);
-    path.getLine2().getGlobalBounds().intersects(path.getLine2().getGlobalBounds(), interseciton2);
-    doors.emplace_back(interseciton1);
-    doors.emplace_back(interseciton2);
+    for (const auto& wall : path.getWalls()) renderTexture.draw(wall);
 
-    for (const auto& wall : walls)
-    {
-      renderTexture.draw(wall);
-    }
+    paths.emplace_back(std::move(path));
   }
 }
 
 void Game::preRenderMap()
 {
-  makePaths();
-  makePathWalls();
-
   renderTexture.clear(sf::Color::Black);
+
+  generatePaths();
 
   // Draw walls and doors
   for (const auto& room : rooms)
@@ -120,18 +99,9 @@ void Game::preRenderMap()
     renderTexture.draw(room);
   }
 
-  for (const auto& path : paths)
-  {
-    renderTexture.draw(path);
-  }
-
   for (const auto& wall : walls)
   {
     renderTexture.draw(wall);
-  }
-  for (const auto& pathWall : pathWalls)
-  {
-    renderTexture.draw(pathWall);
   }
 
   renderTexture.display();
@@ -147,34 +117,25 @@ void Game::loadMap()
   rooms = sfml_helpers::vectorToRoom(vecRooms, coords, scale);
 
   // Set up walls from rooms
+  // Set up walls from rooms
   for (const Room& room : rooms)
   {
-    auto edges = room.getEdgePoints(scale);
-    for (size_t i = 0; i < edges.size(); ++i)
+    renderTexture.draw(room);
+    std::array<sf::Vector2f, 4> edgePoints = room.getEdgePoints(scale);
+
+    for (size_t i = 0; i < edgePoints.size(); i++)
     {
-      auto p1 = edges[i];
-      auto p2 = edges[(i + 1) % edges.size()];
-      auto wall = sfml_helpers::getRectagleWith2Vectors(p1, p2, scale);
+      sf::RectangleShape wall;
+      if (i == edgePoints.size() - 1)  // Last wall, explicitly connect last to first
+        wall = sfml_helpers::getRectagleWith2Vectors(edgePoints[i], edgePoints[0], scale);
+      else
+        wall = sfml_helpers::getRectagleWith2Vectors(edgePoints[i], edgePoints[i + 1], scale);
+
       wall.setFillColor(sf::Color::Magenta);
-      walls.emplace_back(wall);
+      walls.push_back(wall);
+      renderTexture.draw(wall);
+      cout << "Wall " << i << " drawn\n";
     }
-  }
-
-  // Setup paths and doors
-  auto pathsCoords = sfml_helpers::makeNewPaths(rooms);
-
-  for (const auto& coords : pathsCoords)
-  {
-    Path path(coords[2], coords[1], coords[0], scale, 1);
-    path.setwallWidth(1);
-    pathWalls = path.getWalls();
-    for (const auto& wall : pathWalls) renderTexture.draw(wall);
-
-    sf::FloatRect inter1, inter2;
-    path.getLine1().getGlobalBounds().intersects(path.getLine1().getGlobalBounds(), inter1);
-    path.getLine2().getGlobalBounds().intersects(path.getLine2().getGlobalBounds(), inter2);
-    doors.emplace_back(inter1);
-    doors.emplace_back(inter2);
   }
 }
 
@@ -195,18 +156,17 @@ void Game::update(float dt)
   // {
   //   // TODO: Make door logic here
   // }
-  //
-  // if (std::any_of(walls.begin(), walls.end(), [this](const sf::RectangleShape& wall) { return collision::areColliding(player, wall, -1); }))
-  // {
-  //   player.setPosition(originalPos);
-  // }
+
+  if (std::any_of(walls.begin(), walls.end(), [this](const sf::RectangleShape& wall) { return collision::areColliding(player, wall, -1); }))
+  {
+    player.setPosition(originalPos);
+  }
 }
 
 void Game::render()
 {
   window.clear(sf::Color::Black);
   window.draw(staticBackground);
-  player.setFillColor(sf::Color::Red);
   window.draw(player);
   window.display();
 }

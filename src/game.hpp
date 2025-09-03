@@ -21,7 +21,7 @@ class Game
   void update(float dt);
   void handleCollisions();
 
-  void makePaths();
+  void generatePaths();
   void makePathWalls();
 
   sf::RenderWindow window;
@@ -34,7 +34,6 @@ class Game
   std::vector<Path> paths;
   std::vector<sf::FloatRect> doors;
   std::vector<sf::RectangleShape> walls;
-  std::vector<sf::RectangleShape> pathWalls;
   Player player;
   int scale;
 };

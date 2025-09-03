@@ -9,7 +9,7 @@
 #include <SFML/Window.hpp>
 #include <algorithm>
 #include <cmath>
-#include <span>
+#include <cstddef>
 #include "room.h"
 
 #include "adventure_graph.hpp"
@@ -54,8 +54,6 @@ namespace sfml_helpers
 
   bool isOnWalkableArea(sf::RectangleShape player, vector<Room> shapes)
   {
-    sf::FloatRect playerBounds = player.getGlobalBounds();
-
     bool isWalkable = false;
     for (const auto& shape : shapes)
     {
@@ -105,7 +103,7 @@ namespace sfml_helpers
   vector<Room> vectorToRoom(const vector<pair<int, int>>& rooms, const vector<pair<int, int>>& coords, int scale)
   {
     vector<Room> myRooms;
-    for (int i = 0; i < rooms.size(); i++)
+    for (size_t i = 0; i < rooms.size(); i++)
     {
       myRooms.push_back(Room(coords[i].first * scale, coords[i].second * scale, rooms[i].first * scale, rooms[i].second * scale));
     }
@@ -115,7 +113,7 @@ namespace sfml_helpers
   sf::FloatRect getDoorChords(const Room& room, const sf::RectangleShape& path)
   {
     sf::FloatRect intersection;
-    bool doorChords = room.getGlobalBounds().intersects(path.getGlobalBounds(), intersection);
+    room.getGlobalBounds().intersects(path.getGlobalBounds(), intersection);
     return intersection;
   }
 

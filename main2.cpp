@@ -6,5 +6,9 @@ int main()
   game.loadMap();
   game.preRenderMap();
   game.render();
-  game.run();
+  bool gameShouldClose = false;
+  while (!gameShouldClose)
+  {
+    game.run();
+  }
 }

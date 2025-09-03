@@ -4,7 +4,7 @@
 #include <iostream>
 #include <ostream>
 
-Room::Room(float X, float Y, float width, float height) : X(X), Y(Y), width(width), height(height)
+Room::Room(float X, float Y, float width, float height) : X(X), Y(Y), height(height), width(width)
 {
   setSize(sf::Vector2f(width, height));
   setPosition(sf::Vector2f(X, Y));
@@ -13,7 +13,7 @@ Room::Room(float X, float Y, float width, float height) : X(X), Y(Y), width(widt
 
 sf::Vector2f Room::getCenter() const
 {
-	return sf::Vector2f();
+  return sf::Vector2f();
 }
 
 std::array<sf::Vector2f, 4> Room::getEdgePoints(int wallWidth) const

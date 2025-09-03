@@ -46,56 +46,56 @@ build cmake_object_order_depends_target_main: phony || cmake_object_order_depend
 
 build CMakeFiles/main.dir/main.cpp.obj: CXX_COMPILER__main_unscanned_ C$:/Users/round/source/repos/andventure/main.cpp || cmake_object_order_depends_target_main
   DEP_FILE = CMakeFiles\main.dir\main.cpp.obj.d
-  FLAGS = -std=gnu++20
+  FLAGS = -Wall -Wextra -std=gnu++20
   INCLUDES = -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include
   OBJECT_DIR = CMakeFiles\main.dir
   OBJECT_FILE_DIR = CMakeFiles\main.dir
 
 build CMakeFiles/main.dir/src/adventure_graph.cpp.obj: CXX_COMPILER__main_unscanned_ C$:/Users/round/source/repos/andventure/src/adventure_graph.cpp || cmake_object_order_depends_target_main
   DEP_FILE = CMakeFiles\main.dir\src\adventure_graph.cpp.obj.d
-  FLAGS = -std=gnu++20
+  FLAGS = -Wall -Wextra -std=gnu++20
   INCLUDES = -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include
   OBJECT_DIR = CMakeFiles\main.dir
   OBJECT_FILE_DIR = CMakeFiles\main.dir\src
 
 build CMakeFiles/main.dir/src/game.cpp.obj: CXX_COMPILER__main_unscanned_ C$:/Users/round/source/repos/andventure/src/game.cpp || cmake_object_order_depends_target_main
   DEP_FILE = CMakeFiles\main.dir\src\game.cpp.obj.d
-  FLAGS = -std=gnu++20
+  FLAGS = -Wall -Wextra -std=gnu++20
   INCLUDES = -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include
   OBJECT_DIR = CMakeFiles\main.dir
   OBJECT_FILE_DIR = CMakeFiles\main.dir\src
 
 build CMakeFiles/main.dir/src/path.cpp.obj: CXX_COMPILER__main_unscanned_ C$:/Users/round/source/repos/andventure/src/path.cpp || cmake_object_order_depends_target_main
   DEP_FILE = CMakeFiles\main.dir\src\path.cpp.obj.d
-  FLAGS = -std=gnu++20
+  FLAGS = -Wall -Wextra -std=gnu++20
   INCLUDES = -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include
   OBJECT_DIR = CMakeFiles\main.dir
   OBJECT_FILE_DIR = CMakeFiles\main.dir\src
 
 build CMakeFiles/main.dir/src/player.cpp.obj: CXX_COMPILER__main_unscanned_ C$:/Users/round/source/repos/andventure/src/player.cpp || cmake_object_order_depends_target_main
   DEP_FILE = CMakeFiles\main.dir\src\player.cpp.obj.d
-  FLAGS = -std=gnu++20
+  FLAGS = -Wall -Wextra -std=gnu++20
   INCLUDES = -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include
   OBJECT_DIR = CMakeFiles\main.dir
   OBJECT_FILE_DIR = CMakeFiles\main.dir\src
 
 build CMakeFiles/main.dir/src/room.cpp.obj: CXX_COMPILER__main_unscanned_ C$:/Users/round/source/repos/andventure/src/room.cpp || cmake_object_order_depends_target_main
   DEP_FILE = CMakeFiles\main.dir\src\room.cpp.obj.d
-  FLAGS = -std=gnu++20
+  FLAGS = -Wall -Wextra -std=gnu++20
   INCLUDES = -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include
   OBJECT_DIR = CMakeFiles\main.dir
   OBJECT_FILE_DIR = CMakeFiles\main.dir\src
 
 build CMakeFiles/main.dir/src/sfml_helpers.cpp.obj: CXX_COMPILER__main_unscanned_ C$:/Users/round/source/repos/andventure/src/sfml_helpers.cpp || cmake_object_order_depends_target_main
   DEP_FILE = CMakeFiles\main.dir\src\sfml_helpers.cpp.obj.d
-  FLAGS = -std=gnu++20
+  FLAGS = -Wall -Wextra -std=gnu++20
   INCLUDES = -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include
   OBJECT_DIR = CMakeFiles\main.dir
   OBJECT_FILE_DIR = CMakeFiles\main.dir\src
 
 build CMakeFiles/main.dir/src/wall.cpp.obj: CXX_COMPILER__main_unscanned_ C$:/Users/round/source/repos/andventure/src/wall.cpp || cmake_object_order_depends_target_main
   DEP_FILE = CMakeFiles\main.dir\src\wall.cpp.obj.d
-  FLAGS = -std=gnu++20
+  FLAGS = -Wall -Wextra -std=gnu++20
   INCLUDES = -IC:/Users/round/source/repos/andventure/build/_deps/sfml-src/include
   OBJECT_DIR = CMakeFiles\main.dir
   OBJECT_FILE_DIR = CMakeFiles\main.dir\src
@@ -109,6 +109,7 @@ build CMakeFiles/main.dir/src/wall.cpp.obj: CXX_COMPILER__main_unscanned_ C$:/Us
 # Link the executable bin\main.exe
 
 build bin/main.exe: CXX_EXECUTABLE_LINKER__main_ CMakeFiles/main.dir/main.cpp.obj CMakeFiles/main.dir/src/adventure_graph.cpp.obj CMakeFiles/main.dir/src/game.cpp.obj CMakeFiles/main.dir/src/path.cpp.obj CMakeFiles/main.dir/src/player.cpp.obj CMakeFiles/main.dir/src/room.cpp.obj CMakeFiles/main.dir/src/sfml_helpers.cpp.obj CMakeFiles/main.dir/src/wall.cpp.obj | _deps/sfml-build/lib/libsfml-graphics.a _deps/sfml-build/lib/libsfml-window.a _deps/sfml-build/lib/libsfml-system.a || bin/sfml-graphics-2.dll bin/sfml-system-2.dll bin/sfml-window-2.dll
+  FLAGS = -Wall -Wextra
   LINK_LIBRARIES = _deps/sfml-build/lib/libsfml-graphics.a  _deps/sfml-build/lib/libsfml-window.a  _deps/sfml-build/lib/libsfml-system.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\main.dir
   POST_BUILD = cd .

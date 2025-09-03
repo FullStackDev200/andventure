@@ -6,7 +6,6 @@
 #include <SFML/System/Vector2.hpp>
 #include <cmath>
 #include <cwchar>
-#include <vector>
 #include "SFML/Graphics/Color.hpp"
 #include "sfml_helpers.hpp"
 
@@ -16,6 +15,7 @@ Path::Path(sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f p3, int width, int wal
 
   line2 = sfml_helpers::getRectagleWith2Vectors(point3, point2, width);
   line2.setFillColor(sf::Color::Red);
+  generateWalls();
 }
 
 const sf::Vector2f Path::getPoint1()
@@ -31,7 +31,7 @@ const sf::Vector2f Path::getPoint3()
   return point3;
 }
 
-std::vector<sf::RectangleShape> Path::getWalls() const
+void Path::generateWalls()
 {
   float offset_distance = (width / 2.0f) + wallWidth;
 
@@ -70,15 +70,15 @@ std::vector<sf::RectangleShape> Path::getWalls() const
   sf::Vector2f wall4_p2 = point3 - normal2 * offset_distance;
 
   // Create rectangles
-  sf::RectangleShape wall1 = sfml_helpers::getThickLine(wall1_p1, wall1_p2, sf::Color::Yellow, wallWidth);
-  sf::RectangleShape wall2 = sfml_helpers::getThickLine(wall2_p1, wall2_p2, sf::Color::Yellow, wallWidth);
-  sf::RectangleShape wall3 = sfml_helpers::getThickLine(wall3_p1, wall3_p2, sf::Color::Yellow, wallWidth);
-  sf::RectangleShape wall4 = sfml_helpers::getThickLine(wall4_p1, wall4_p2, sf::Color::Yellow, wallWidth);
+  wall1 = sfml_helpers::getThickLine(wall1_p1, wall1_p2, sf::Color::Yellow, wallWidth);
+  wall2 = sfml_helpers::getThickLine(wall2_p1, wall2_p2, sf::Color::Yellow, wallWidth);
+  wall3 = sfml_helpers::getThickLine(wall3_p1, wall3_p2, sf::Color::Yellow, wallWidth);
+  wall4 = sfml_helpers::getThickLine(wall4_p1, wall4_p2, sf::Color::Yellow, wallWidth);
 
-  return {wall1, wall2, wall3, wall4};
+  walls = {wall1, wall2, wall3, wall4};
 }
 
-void Path::drawWalls(sf::RenderTarget& target, sf::RenderStates states) const
+void Path::drawWalls(sf::RenderTarget& target) const
 {
   target.draw(wall1);
   target.draw(wall2);
@@ -86,7 +86,7 @@ void Path::drawWalls(sf::RenderTarget& target, sf::RenderStates states) const
   target.draw(wall4);
 }
 
-void Path::setwallWidth(int newWallWidth)
+void Path::setWallWidth(int newWallWidth)
 {
   wallWidth = newWallWidth;
 }
@@ -105,4 +105,9 @@ const sf::RectangleShape& Path::getLine1() const
 const sf::RectangleShape& Path::getLine2() const
 {
   return line2;
+}
+
+const std::array<sf::RectangleShape, 4> Path::getWalls() const
+{
+  return walls;
 }
